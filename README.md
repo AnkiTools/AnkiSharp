@@ -1,5 +1,7 @@
 # AnkiSharp
 
+:tada: It's finally here! You can create automatically anki cards from your C# application. :tada:
+
 ```
 AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_);
 
@@ -22,6 +24,6 @@ test.CreateApkgFile("result", list);
 
 ## TO-DO
 
-- Possibility to inherit from AnkiItem, add more properties and add to the cards
+- Possibility to inherit from AnkiItem, add more properties and add them to the cards
 - Possibility to change the card's CSS
 - Generate audio With synthetizer? (Need to be careful about different languages)
