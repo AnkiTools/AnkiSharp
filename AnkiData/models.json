@@ -1,0 +1,56 @@
+{
+  "1342697561419": {
+    "vers": [],
+    "name": "Basic",
+    "tags": [],
+    "did": {ID_DECK},
+    "usn": -1,
+    "req": [
+      [
+        0,
+        "all",
+        [
+          0
+        ]
+      ]
+    ],
+    "flds": [
+      {
+        "name": "Front",
+        "rtl": false,
+        "sticky": false,
+        "media": [],
+        "ord": 0,
+        "font": "Arial",
+        "size": 12
+      },
+      {
+        "name": "Back",
+        "rtl": false,
+        "sticky": false,
+        "media": [],
+        "ord": 1,
+        "font": "Arial",
+        "size": 12
+      }
+    ],
+    "sortf": 0,
+    "latexPre": "\\documentclass[12pt]{article}\n\\special{papersize=3in,5in}\n\\usepackage{amssymb,amsmath}\n\\pagestyle{empty}\n\\setlength{\\parindent}{0in}\n\\begin{document}\n",
+    "tmpls": [
+      {
+        "name": "Forward",
+        "qfmt": "{{Front}}",
+        "did": null,
+        "bafmt": "",
+        "afmt": "{{Front}}\n<br>\n{{Back}}",
+        "ord": 0,
+        "bqfmt": ""
+      }
+    ],
+    "latexPost": "\\end{document}",
+    "type": 0,
+    "id": 1342697561419,
+    "css": ".card {\n font-family: arial;\n font-size: 30px;\n text-align: center;\n color: black;\n white;\n}\n\n.card1 { #FFFFFF; }",
+    "mod": 1398130117
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "1": {
+    "desc": "",
+    "name": "Default",
+    "extendRev": 50,
+    "usn": 0,
+    "collapsed": false,
+    "newToday": [
+      0,
+      0
+    ],
+    "timeToday": [
+      0,
+      0
+    ],
+    "dyn": 0,
+    "extendNew": 10,
+    "conf": 1,
+    "revToday": [
+      0,
+      0
+    ],
+    "lrnToday": [
+      0,
+      0
+    ],
+    "id": 1,
+    "mod": 1398130160
+  },
+  "{ID_DECK}": {
+    "desc": "",
+    "name": "{NAME}",
+    "extendRev": 50,
+    "usn": -1,
+    "collapsed": false,
+    "newToday": [
+      754,
+      0
+    ],
+    "timeToday": [
+      754,
+      0
+    ],
+    "dyn": 0,
+    "extendNew": 10,
+    "conf": 1,
+    "revToday": [
+      754,
+      0
+    ],
+    "lrnToday": [
+      754,
+      0
+    ],
+    "id": {ID_DECK},
+    "mod": 1398130140
+  }
+}
