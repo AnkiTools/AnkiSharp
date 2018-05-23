@@ -1,5 +1,6 @@
 ﻿using AnkiSharp.Helpers;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
@@ -15,6 +16,7 @@ namespace AnkiSharp
         #region FIELDS
         private SQLiteConnection _conn;
 
+        private string _name;
         private Assembly _assembly;
         private string _path;
         private string _sqlitePath;
@@ -22,6 +24,8 @@ namespace AnkiSharp
         private string _collectionFilePath;
 
         private List<AnkiItem> _ankiItems;
+        
+        private FieldList _flds;
         #endregion
 
         #region CTOR
@@ -29,13 +33,22 @@ namespace AnkiSharp
         /// Creates a Anki object
         /// </summary>
         /// <param name="path">Where to save your apkg file</param>
-        public Anki(string path)
+        /// <param name="name">Specify the name of apkg file and deck</param>
+        public Anki(string path, string name)
         {
+            _name = name;
+            _ankiItems = new List<AnkiItem>();
             _assembly = Assembly.GetExecutingAssembly();
             _sqlitePath = _assembly.Location;
             _ankiDataPath = _assembly.Location;
 
             _path = path;
+
+            _flds = new FieldList
+            {
+                new Field("Front"),
+                new Field("Back")
+            };
         }
         #endregion
 
@@ -45,12 +58,8 @@ namespace AnkiSharp
         /// <summary>
         /// Create a apkg file with all the words
         /// </summary>
-        /// <param name="name">Name of apkg file and of deck</param>
-        /// <param name="ankiItems">All the items you want to add</param>
-        public void CreateApkgFile(string name, List<AnkiItem> ankiItems)
+        public void CreateApkgFile()
         {
-            _ankiItems = ankiItems;
-
             _collectionFilePath = Path.Combine(_path, "collection.db");
             File.Create(_collectionFilePath).Close();
 
@@ -58,12 +67,30 @@ namespace AnkiSharp
 
             ExecuteSQLiteCommands();
 
-            CreateZipFile(name);
+            CreateZipFile();
         }
+
+        public void SetFields(params string[] values)
+        {
+            _flds.Clear();
+            foreach (var value in values)
+            {
+                _flds.Add(new Field(value));
+            }
+        }
+
+        public void AddItem(params string[] properties)
+        {
+            if (properties.Length != _flds.Count)
+                throw new ArgumentException("Number of fields provided is not the same as the one expected");
+
+            _ankiItems.Add(new AnkiItem(_flds, properties));
+        }
+
         #endregion
 
         #region PRIVATE
-        private void CreateZipFile(string name)
+        private void CreateZipFile()
         {
             string anki2FilePath = Path.Combine(_path, "collection.anki2");
             string mediaFilePath = Path.Combine(_path, "media");
@@ -71,7 +98,7 @@ namespace AnkiSharp
             File.Move(_collectionFilePath, anki2FilePath);
 
             string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string zipPath = Path.Combine(@"C:\Users\Clement\Desktop\", name + ".apkg");
+            string zipPath = Path.Combine(@"C:\Users\Clement\Desktop\", _name + ".apkg");
 
             ZipFile.CreateFromDirectory(_path, zipPath);
 
@@ -96,10 +123,17 @@ namespace AnkiSharp
             var id_deck = GetTimeStampTruncated();
 
             var modelsFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.models.json")).ReadToEnd();
-            var models = modelsFileContent.Replace("{ID_DECK}", id_deck.ToString()).Replace("\r\n", "");
+            var models = modelsFileContent.Replace("{ID_DECK}", id_deck.ToString());
 
+            var json = _flds.ToJSON();
+            models = models.Replace("{FLDS}", json);
+
+            var qfmt = _flds[0].ToString();
+            var afmt = _flds.ToString();
+            models = models.Replace("{QFMT}", qfmt).Replace("{AFMT}", afmt).Replace("\r\n", "");
+            
             var deckFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.decks.json")).ReadToEnd();
-            var deck = deckFileContent.Replace("{NAME}", "TEST").Replace("{ID_DECK}", id_deck.ToString()).Replace("\r\n", "");
+            var deck = deckFileContent.Replace("{NAME}", _name).Replace("{ID_DECK}", id_deck.ToString()).Replace("\r\n", "");
 
             var dconfFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.dconf.json")).ReadToEnd();
             var dconf = dconfFileContent.Replace("\r\n", "");
@@ -111,6 +145,14 @@ namespace AnkiSharp
             return id_deck;
         }
 
+        private string ConcatFields(AnkiItem item)
+        {
+            var test = from t in _flds
+                       select item[t.Name];
+
+            return String.Join("\x1f", test.ToArray());
+        }
+
         private void CreateNotesAndCards(double id_deck)
         {
             foreach (var ankiItem in _ankiItems)
@@ -119,8 +161,8 @@ namespace AnkiSharp
                 var guid = ((ShortGuid)Guid.NewGuid()).ToString().Substring(0, 10);
                 var mid = "1342697561419";
                 var mod = GetTimeStampTruncated();
-                var flds = ankiItem.Front + '\x1f' + ankiItem.Back;
-                var sfld = ankiItem.Front;
+                var flds = ConcatFields(ankiItem);
+                string sfld = ankiItem[_flds[0].Name].ToString();
                 var csum = "";
 
                 using (SHA1Managed sha1 = new SHA1Managed())
