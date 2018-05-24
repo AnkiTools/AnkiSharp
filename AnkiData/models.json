@@ -31,7 +31,7 @@
     "latexPost": "\\end{document}",
     "type": 0,
     "id": 1342697561419,
-    "css": ".card {\n font-family: arial;\n font-size: 30px;\n text-align: center;\n color: black;\n white;\n}\n\n.card1 { #FFFFFF; }",
+    "css": "{CSS}",
     "mod": 1398130117
   }
 }

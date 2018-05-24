@@ -26,6 +26,7 @@ namespace AnkiSharp
         private List<AnkiItem> _ankiItems;
         
         private FieldList _flds;
+        private string _css;
         #endregion
 
         #region CTOR
@@ -49,6 +50,8 @@ namespace AnkiSharp
                 new Field("Front"),
                 new Field("Back")
             };
+
+            _css = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.CardStyle.css")).ReadToEnd();
         }
         #endregion
 
@@ -77,6 +80,11 @@ namespace AnkiSharp
             {
                 _flds.Add(new Field(value));
             }
+        }
+
+        public void SetCss(string filepath)
+        {
+            _css = new StreamReader(filepath).ReadToEnd();
         }
 
         public void AddItem(params string[] properties)
@@ -123,7 +131,8 @@ namespace AnkiSharp
             var id_deck = GetTimeStampTruncated();
 
             var modelsFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.models.json")).ReadToEnd();
-            var models = modelsFileContent.Replace("{ID_DECK}", id_deck.ToString());
+            var models = modelsFileContent.Replace("{CSS}", _css);
+            models = models.Replace("{ID_DECK}", id_deck.ToString());
 
             var json = _flds.ToJSON();
             models = models.Replace("{FLDS}", json);
@@ -131,7 +140,9 @@ namespace AnkiSharp
             var qfmt = _flds[0].ToString();
             var afmt = _flds.ToString();
             models = models.Replace("{QFMT}", qfmt).Replace("{AFMT}", afmt).Replace("\r\n", "");
-            
+
+            Console.WriteLine(models);
+
             var deckFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.decks.json")).ReadToEnd();
             var deck = deckFileContent.Replace("{NAME}", _name).Replace("{ID_DECK}", id_deck.ToString()).Replace("\r\n", "");
 
