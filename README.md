@@ -2,6 +2,7 @@
 
 :tada: It's finally here! You can create automatically anki cards from your C# application. :tada:
 
+### Basic use
 ```
 AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
 
@@ -12,6 +13,8 @@ test.AddItem("House", "Maison");
 
 test.CreateApkgFile();
 ```
+
+### SetFields
 ```
 AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
 
@@ -25,6 +28,8 @@ test.AddItem("House", "Casa", "Maison");
 
 test.CreateApkgFile();
 ```
+
+### SetCss
 ```
 AnkiSharp.Anki test = new AnkiSharp.Anki(@"C:\Users\Clement\Desktop\TestAnkiSharp\", "English");
 
