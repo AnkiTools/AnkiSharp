@@ -31,7 +31,7 @@ test.CreateApkgFile();
 
 ### SetCss
 ```
-AnkiSharp.Anki test = new AnkiSharp.Anki(@"C:\Users\Clement\Desktop\TestAnkiSharp\", "English");
+AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
 
 //Permits to change the css of your cards by providing it Css file path
 test.SetCss(_PATH_);
