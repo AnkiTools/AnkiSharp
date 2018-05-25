@@ -1,6 +1,5 @@
 ﻿using AnkiSharp.Helpers;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
@@ -59,22 +58,7 @@ namespace AnkiSharp
 
         #region FUNCTIONS
 
-        #region PUBLIC
-        /// <summary>
-        /// Create a apkg file with all the words
-        /// </summary>
-        public void CreateApkgFile()
-        {
-            _collectionFilePath = Path.Combine(_path, "collection.db");
-            File.Create(_collectionFilePath).Close();
-
-            CreateMediaFile();
-
-            ExecuteSQLiteCommands();
-
-            CreateZipFile();
-        }
-
+        #region SETTERS
         public void SetFields(params string[] values)
         {
             _flds.Clear();
@@ -93,7 +77,24 @@ namespace AnkiSharp
         {
             _format = format;
         }
+        #endregion
 
+        #region PUBLIC
+        /// <summary>
+        /// Create a apkg file with all the words
+        /// </summary>
+        public void CreateApkgFile()
+        {
+            _collectionFilePath = Path.Combine(_path, "collection.db");
+            File.Create(_collectionFilePath).Close();
+
+            CreateMediaFile();
+
+            ExecuteSQLiteCommands();
+
+            CreateZipFile();
+        }
+        
         public void AddItem(params string[] properties)
         {
             if (properties.Length != _flds.Count)
@@ -121,21 +122,16 @@ namespace AnkiSharp
             File.Delete(mediaFilePath);
         }
 
-        private Double GetTimeStampTruncated()
-        {
-            return Math.Truncate(DateTime.Now.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
-        }
-
         private double CreateCol()
         {
-            var timeStamp = GetTimeStampTruncated();
-            var crt = GetTimeStampTruncated();
+            var timeStamp = GeneralHelper.GetTimeStampTruncated();
+            var crt = GeneralHelper.GetTimeStampTruncated();
 
             string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
             var confFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.conf.json")).ReadToEnd();
             var conf = confFileContent.Replace("{MODEL}", timeStamp.ToString()).Replace("\r\n", "");
 
-            var id_deck = GetTimeStampTruncated();
+            var id_deck = GeneralHelper.GetTimeStampTruncated();
 
             var modelsFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.models.json")).ReadToEnd();
             var models = modelsFileContent.Replace("{CSS}", _css);
@@ -159,28 +155,20 @@ namespace AnkiSharp
 
             string insertCol = "INSERT INTO col VALUES(1, " + crt + ", " + timeStamp + ", " + timeStamp + ", 11, 0, 0, 0, '" + conf + "', '" + models + "', '" + deck + "', '" + dconf + "', " + "'{}'" + ");";
 
-            ExecuteSQLiteCommand(insertCol);
+            SQLiteHelper.ExecuteSQLiteCommand(_conn, insertCol);
 
             return id_deck;
-        }
-
-        private string ConcatFields(AnkiItem item)
-        {
-            var test = from t in _flds
-                       select item[t.Name];
-
-            return String.Join("\x1f", test.ToArray());
         }
 
         private void CreateNotesAndCards(double id_deck)
         {
             foreach (var ankiItem in _ankiItems)
             {
-                var id_note = GetTimeStampTruncated();
+                var id_note = GeneralHelper.GetTimeStampTruncated();
                 var guid = ((ShortGuid)Guid.NewGuid()).ToString().Substring(0, 10);
                 var mid = "1342697561419";
-                var mod = GetTimeStampTruncated();
-                var flds = ConcatFields(ankiItem);
+                var mod = GeneralHelper.GetTimeStampTruncated();
+                var flds = GeneralHelper.ConcatFields(_flds, ankiItem, "\x1f");
                 string sfld = ankiItem[_flds[0].Name].ToString();
                 var csum = "";
 
@@ -197,12 +185,12 @@ namespace AnkiSharp
                 }
 
                 string insertNote = "INSERT INTO notes VALUES(" + id_note + ", '" + guid + "', " + mid + ", " + mod + ", -1, '  ', '" + flds + "', '" + sfld + "', " + csum + ", 0, '');";
-                ExecuteSQLiteCommand(insertNote);
+                SQLiteHelper.ExecuteSQLiteCommand(_conn, insertNote);
 
-                var id_card = GetTimeStampTruncated();
+                var id_card = GeneralHelper.GetTimeStampTruncated();
                 string insertCard = "INSERT INTO cards VALUES(" + id_card + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, 0, 0, " + id_note + ", 0, 0, 0, 0, 0, 0, 0, 0, '');";
 
-                ExecuteSQLiteCommand(insertCard);
+                SQLiteHelper.ExecuteSQLiteCommand(_conn, insertCard);
             }
         }
 
@@ -219,11 +207,11 @@ namespace AnkiSharp
                 var revLogs = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.RevLogTable.txt")).ReadToEnd();
                 var graves = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.GravesTable.txt")).ReadToEnd();
 
-                ExecuteSQLiteCommand(column);
-                ExecuteSQLiteCommand(notes);
-                ExecuteSQLiteCommand(cards);
-                ExecuteSQLiteCommand(revLogs);
-                ExecuteSQLiteCommand(graves);
+                SQLiteHelper.ExecuteSQLiteCommand(_conn, column);
+                SQLiteHelper.ExecuteSQLiteCommand(_conn, notes);
+                SQLiteHelper.ExecuteSQLiteCommand(_conn, cards);
+                SQLiteHelper.ExecuteSQLiteCommand(_conn, revLogs);
+                SQLiteHelper.ExecuteSQLiteCommand(_conn, graves);
                 
                 var id_deck = CreateCol();
                 CreateNotesAndCards(id_deck);
@@ -239,25 +227,7 @@ namespace AnkiSharp
                 SQLiteConnection.ClearAllPools();
             }
         }
-
-        private void ExecuteSQLiteCommandFromFile(string path)
-        {
-            string toExecute = File.ReadAllText(path);
-
-            using (SQLiteCommand command = new SQLiteCommand(toExecute, _conn))
-            {
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private void ExecuteSQLiteCommand(string toExecute)
-        {
-            using (SQLiteCommand command = new SQLiteCommand(toExecute, _conn))
-            {
-                command.ExecuteNonQuery();
-            }
-        }
-
+        
         private void CreateMediaFile()
         {
             string mediaFilePath = Path.Combine(_path, "media");
