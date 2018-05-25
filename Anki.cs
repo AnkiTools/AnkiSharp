@@ -8,6 +8,7 @@ using System.IO.Compression;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AnkiSharp
 {
@@ -27,6 +28,7 @@ namespace AnkiSharp
         
         private FieldList _flds;
         private string _css;
+        private string _format;
         #endregion
 
         #region CTOR
@@ -87,6 +89,11 @@ namespace AnkiSharp
             _css = new StreamReader(filepath).ReadToEnd();
         }
 
+        public void SetFormat(string format)
+        {
+            _format = format;
+        }
+
         public void AddItem(params string[] properties)
         {
             if (properties.Length != _flds.Count)
@@ -137,12 +144,13 @@ namespace AnkiSharp
             var json = _flds.ToJSON();
             models = models.Replace("{FLDS}", json);
 
-            var qfmt = _flds[0].ToString();
-            var afmt = _flds.ToString();
+
+            var format = _format != null ? _flds.Format(_format) : _flds.ToString();
+            var qfmt = Regex.Split(format, "<br>")[0];
+            var afmt = format;
+            
             models = models.Replace("{QFMT}", qfmt).Replace("{AFMT}", afmt).Replace("\r\n", "");
-
-            Console.WriteLine(models);
-
+            
             var deckFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.decks.json")).ReadToEnd();
             var deck = deckFileContent.Replace("{NAME}", _name).Replace("{ID_DECK}", id_deck.ToString()).Replace("\r\n", "");
 

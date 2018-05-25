@@ -43,7 +43,22 @@ test.AddItem("House", "Maison");
 
 test.CreateApkgFile();
 ```
+### SetFormat
+```
+AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
 
+test.SetFields("English", "Spanish", "French");
+
+//Everything before '<br>' is the front of the card, everything after is the behind
+test.SetFormat("{0} - {1} \\n<br>\\n {2}");
+
+test.AddItem("Hello", "Hola", "Bonjour");
+test.AddItem("How are you ?", "Como estas?",  "Comment ca va ?");
+test.AddItem("Flower", "Flor", "fleur");
+test.AddItem("House", "Casa", "Maison");
+
+test.CreateApkgFile();
+```
 
 ## TO-DO
 
@@ -53,5 +68,5 @@ test.CreateApkgFile();
 
 - Add more fields to the cards :ok_hand:
 - Possibility to change the card's CSS :ok_hand:
-- Being able to show what's on the front and on the back of the card :zzz:
+- Being able to show what's on the front and on the back of the card :ok_hand:
 - Generate audio with synthetizer or other tools? (Need to be careful about different languages) :zzz:

@@ -6,6 +6,21 @@ namespace AnkiSharp
 {
     public class FieldList : List<Field>
     {
+        private string _format;
+
+        #region CTOR
+
+        public FieldList()
+        {
+        }
+
+        public FieldList(string format)
+        {
+            _format = format;
+        }
+
+        #endregion
+
         #region FUNCTIONS
         public new void Add(Field field)
         {
@@ -24,6 +39,18 @@ namespace AnkiSharp
         public override string ToString()
         {
             return String.Join("\\n<br>\\n", (object[])ToArray());
+        }
+
+        public string Format(string format)
+        {
+            var array = ToArray();
+            
+            for (int i = 0; i < array.Length; ++i)
+            {
+                format = format.Replace("{" + i + "}", array[i].ToString());
+            }
+
+            return format;
         }
         #endregion
     }
