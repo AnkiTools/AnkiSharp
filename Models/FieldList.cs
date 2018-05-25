@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AnkiSharp
+namespace AnkiSharp.Models
 {
     public class FieldList : List<Field>
     {

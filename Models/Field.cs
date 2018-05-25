@@ -1,4 +1,4 @@
-﻿namespace AnkiSharp
+﻿namespace AnkiSharp.Models
 {
     public class Field
     {

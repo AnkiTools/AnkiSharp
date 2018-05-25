@@ -64,9 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Anki.cs" />
-    <Compile Include="AnkiItem.cs" />
-    <Compile Include="Field.cs" />
-    <Compile Include="FieldList.cs" />
+    <Compile Include="Models\AnkiItem.cs" />
+    <Compile Include="Models\Field.cs" />
+    <Compile Include="Models\FieldList.cs" />
     <Compile Include="Helpers\GeneralHelper.cs" />
     <Compile Include="Helpers\ShortGuid.cs" />
     <Compile Include="Helpers\SQLiteHelper.cs" />

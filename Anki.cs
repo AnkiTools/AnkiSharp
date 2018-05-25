@@ -1,4 +1,5 @@
 ﻿using AnkiSharp.Helpers;
+using AnkiSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
