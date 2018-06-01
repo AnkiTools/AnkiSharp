@@ -70,3 +70,8 @@ test.CreateApkgFile();
 - Possibility to change the card's CSS :ok_hand:
 - Being able to show what's on the front and on the back of the card :ok_hand:
 - Generate audio with synthetizer or other tools? (Need to be careful about different languages) :zzz:
+
+## Resources
+
+- [Anki APKG format documentation](http://decks.wikia.com/wiki/Anki_APKG_format_documentation)
+- [Database Structure](https://github.com/ankidroid/Anki-Android/wiki/Database-Structure)
