@@ -3,6 +3,7 @@ using AnkiSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -29,6 +30,7 @@ namespace AnkiSharp
         private FieldList _flds;
         private string _css;
         private string _format;
+        private CultureInfo _cultureInfo;
         #endregion
 
         #region CTOR
@@ -39,21 +41,14 @@ namespace AnkiSharp
         /// <param name="name">Specify the name of apkg file and deck</param>
         public Anki(string path, string name)
         {
-            _name = name;
-            _ankiItems = new List<AnkiItem>();
-            _assembly = Assembly.GetExecutingAssembly();
-            _sqlitePath = _assembly.Location;
-            _ankiDataPath = _assembly.Location;
+            Init(path, name);
+            _cultureInfo = CultureInfo.CurrentCulture;
+        }
 
-            _path = path;
-
-            _flds = new FieldList
-            {
-                new Field("Front"),
-                new Field("Back")
-            };
-
-            _css = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.CardStyle.css")).ReadToEnd();
+        public Anki(string path, string name, CultureInfo cultureInfo)
+        {
+            Init(path, name);
+            _cultureInfo = cultureInfo;
         }
         #endregion
 
@@ -107,6 +102,25 @@ namespace AnkiSharp
         #endregion
 
         #region PRIVATE
+        private void Init(string path, string name)
+        {
+            _name = name;
+            _ankiItems = new List<AnkiItem>();
+            _assembly = Assembly.GetExecutingAssembly();
+            _sqlitePath = _assembly.Location;
+            _ankiDataPath = _assembly.Location;
+
+            _path = path;
+
+            _flds = new FieldList
+            {
+                new Field("Front"),
+                new Field("Back")
+            };
+
+            _css = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.CardStyle.css")).ReadToEnd();
+        }
+
         private void CreateZipFile()
         {
             string anki2FilePath = Path.Combine(_path, "collection.anki2");
@@ -140,7 +154,6 @@ namespace AnkiSharp
 
             var json = _flds.ToJSON();
             models = models.Replace("{FLDS}", json);
-
 
             var format = _format != null ? _flds.Format(_format) : _flds.ToString();
             var qfmt = Regex.Split(format, "<br>")[0];
