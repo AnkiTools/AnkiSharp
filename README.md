@@ -5,7 +5,7 @@
 ![ankisharp](https://github.com/Clement-Jean/AnkiSharp/blob/master/Readme/Anki-icon.svg.png)
 
 ### Basic use
-```
+``` csharp
 AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
 
 test.AddItem("Hello", "Bonjour");
@@ -17,7 +17,7 @@ test.CreateApkgFile();
 ```
 
 ### SetFields
-```
+``` csharp
 AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
 
 //Permits to set more than two fields 
@@ -32,7 +32,7 @@ test.CreateApkgFile();
 ```
 
 ### SetCss
-```
+``` csharp
 AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
 
 //Permits to change the css of your cards by providing it Css file path
@@ -46,7 +46,7 @@ test.AddItem("House", "Maison");
 test.CreateApkgFile();
 ```
 ### SetFormat
-```
+``` csharp
 AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
 
 test.SetFields("English", "Spanish", "French");
