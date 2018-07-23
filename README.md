@@ -2,7 +2,7 @@
 
 :tada: It's finally here! You can create automatically anki cards from your C# application. :tada:
 
-![ankisharp](https://github.com/Clement-Jean/AnkiSharp/blob/master/Readme/Anki-icon.svg.png =300x150)
+![ankisharp](https://github.com/Clement-Jean/AnkiSharp/blob/master/Readme/Anki-icon.svg.png)
 
 ### Basic use
 ```
