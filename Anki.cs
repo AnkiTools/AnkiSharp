@@ -79,7 +79,7 @@ namespace AnkiSharp
         /// <summary>
         /// Create a apkg file with all the words
         /// </summary>
-        public void CreateApkgFile()
+        public void CreateApkgFile(string path)
         {
             _collectionFilePath = Path.Combine(_path, "collection.db");
             File.Create(_collectionFilePath).Close();
@@ -88,7 +88,7 @@ namespace AnkiSharp
 
             ExecuteSQLiteCommands();
 
-            CreateZipFile();
+            CreateZipFile(path);
         }
         
         public void AddItem(params string[] properties)
@@ -121,7 +121,7 @@ namespace AnkiSharp
             _css = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.CardStyle.css")).ReadToEnd();
         }
 
-        private void CreateZipFile()
+        private void CreateZipFile(string path)
         {
             string anki2FilePath = Path.Combine(_path, "collection.anki2");
             string mediaFilePath = Path.Combine(_path, "media");
@@ -129,7 +129,7 @@ namespace AnkiSharp
             File.Move(_collectionFilePath, anki2FilePath);
 
             string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string zipPath = Path.Combine(@"C:\Users\Clement\Desktop\", _name + ".apkg");
+            string zipPath = Path.Combine(path, _name + ".apkg");
 
             ZipFile.CreateFromDirectory(_path, zipPath);
 
