@@ -4,6 +4,12 @@
 
 ![ankisharp](https://github.com/Clement-Jean/AnkiSharp/blob/master/Readme/Anki-icon.svg.png)
 
+### Nuget
+
+```
+PM> Install-Package AnkiSharp -Version 1.0.0
+```
+
 ### Basic use
 ``` csharp
 AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_FOR_TEMP_FILES_, _NAME_OF_ANKI_PACKAGE_);
