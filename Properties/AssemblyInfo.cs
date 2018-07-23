@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AnkiSharp")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Create automatically anki cards from your C# application")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("一介好学")]
 [assembly: AssemblyProduct("AnkiSharp")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
