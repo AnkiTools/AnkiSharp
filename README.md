@@ -6,19 +6,19 @@
 
 ### Basic use
 ``` csharp
-AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
+AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_FOR_TEMP_FILES_, _NAME_OF_ANKI_PACKAGE_);
 
 test.AddItem("Hello", "Bonjour");
 test.AddItem("How are you ?", "Comment ca va ?");
 test.AddItem("Flower", "fleur");
 test.AddItem("House", "Maison");
 
-test.CreateApkgFile();
+test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
 
 ### SetFields
 ``` csharp
-AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
+AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_FOR_TEMP_FILES_, _NAME_OF_ANKI_PACKAGE_);
 
 //Permits to set more than two fields 
 test.SetFields("English", "Spanish", "French");
@@ -28,26 +28,26 @@ test.AddItem("How are you ?", "Como estas?", "Comment ca va ?");
 test.AddItem("Flower", "flor", "fleur");
 test.AddItem("House", "Casa", "Maison");
 
-test.CreateApkgFile();
+test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
 
 ### SetCss
 ``` csharp
-AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
+AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_FOR_TEMP_FILES_, _NAME_OF_ANKI_PACKAGE_);
 
 //Permits to change the css of your cards by providing it Css file path
-test.SetCss(_PATH_);
+test.SetCss(_PATH_OF_CSS_FILE_);
 
 test.AddItem("Hello", "Bonjour");
 test.AddItem("How are you ?", "Comment ca va ?");
 test.AddItem("Flower", "fleur");
 test.AddItem("House", "Maison");
 
-test.CreateApkgFile();
+test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
 ### SetFormat
 ``` csharp
-AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_, _NAME_);
+AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_FOR_TEMP_FILES_, _NAME_OF_ANKI_PACKAGE_);
 
 test.SetFields("English", "Spanish", "French");
 
@@ -59,7 +59,7 @@ test.AddItem("How are you ?", "Como estas?",  "Comment ca va ?");
 test.AddItem("Flower", "Flor", "fleur");
 test.AddItem("House", "Casa", "Maison");
 
-test.CreateApkgFile();
+test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
 
 ## TO-DO
