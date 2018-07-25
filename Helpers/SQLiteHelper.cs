@@ -11,5 +11,13 @@ namespace AnkiSharp.Helpers
                 command.ExecuteNonQuery();
             }
         }
+
+        internal static SQLiteDataReader ExecuteSQLiteCommandRead(SQLiteConnection conn, string toExecute)
+        {
+            using (SQLiteCommand command = new SQLiteCommand(toExecute, conn))
+            {
+                return command.ExecuteReader();
+            }
+        }
     }
 }
