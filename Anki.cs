@@ -1,9 +1,9 @@
 ﻿using AnkiSharp.Helpers;
 using AnkiSharp.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -21,8 +21,6 @@ namespace AnkiSharp
         private string _name;
         private Assembly _assembly;
         private string _path;
-        private string _sqlitePath;
-        private string _ankiDataPath;
         private string _collectionFilePath;
 
         private List<AnkiItem> _ankiItems;
@@ -30,7 +28,6 @@ namespace AnkiSharp
         private FieldList _flds;
         private string _css;
         private string _format;
-        private CultureInfo _cultureInfo;
         #endregion
 
         #region CTOR
@@ -39,16 +36,34 @@ namespace AnkiSharp
         /// </summary>
         /// <param name="path">Where to save your apkg file</param>
         /// <param name="name">Specify the name of apkg file and deck</param>
-        public Anki(string path, string name)
+        public Anki(string name, string path = null)
         {
-            Init(path, name);
-            _cultureInfo = CultureInfo.CurrentCulture;
+            _assembly = Assembly.GetExecutingAssembly();
+
+            if (path == null)
+                _path = Path.Combine(Path.GetDirectoryName(_assembly.Location), "tmp");
+            else
+                _path = path;
+
+            if (Directory.Exists(_path) == false)
+                Directory.CreateDirectory(_path);
+            
+            Init(_path, name);
         }
 
-        public Anki(string path, string name, CultureInfo cultureInfo)
+        public Anki(ApkgFile file)
         {
-            Init(path, name);
-            _cultureInfo = cultureInfo;
+            _assembly = Assembly.GetExecutingAssembly();
+            _path = Path.Combine(Path.GetDirectoryName(_assembly.Location), "tmp");
+
+            if (Directory.Exists(_path) == false)
+                Directory.CreateDirectory(_path);
+
+            Init(_path, Path.GetFileName(file.Path()).Replace(".apkg", "_copy"));
+
+            _collectionFilePath = Path.Combine(_path, "collection.db");
+
+            ReadApkgFile(file.Path());
         }
         #endregion
 
@@ -107,8 +122,6 @@ namespace AnkiSharp
             _name = name;
             _ankiItems = new List<AnkiItem>();
             _assembly = Assembly.GetExecutingAssembly();
-            _sqlitePath = _assembly.Location;
-            _ankiDataPath = _assembly.Location;
 
             _path = path;
 
@@ -127,8 +140,6 @@ namespace AnkiSharp
             string mediaFilePath = Path.Combine(_path, "media");
 
             File.Move(_collectionFilePath, anki2FilePath);
-
-            string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string zipPath = Path.Combine(path, _name + ".apkg");
 
             ZipFile.CreateFromDirectory(_path, zipPath);
@@ -268,6 +279,81 @@ namespace AnkiSharp
                 fs.Close();
             }
         }
+
+        public void ReadApkgFile(string path)
+        {
+            ZipFile.ExtractToDirectory(path, _path);
+
+            string anki2File = Path.Combine(_path, "collection.anki2");
+            
+            File.Move(anki2File, _collectionFilePath);
+
+            _conn = new SQLiteConnection(@"Data Source=" + _collectionFilePath + ";Version=3;");
+
+            try
+            {
+                _conn.Open();
+                SQLiteDataReader reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT flds, mid FROM notes");
+                var mid = -1.0;
+                string[] splitted = null;
+                List<string[]> result = new List<string[]>();
+
+                while (reader.Read())
+                {
+                    splitted = reader.GetString(0).Split('\x1f');
+
+                    mid = reader.GetInt64(1);
+                    result.Add(splitted);
+                }
+                
+                reader.Close();
+                reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT models FROM col");
+                JObject models = null;
+
+                while (reader.Read())
+                {
+                    models = JObject.Parse(reader.GetString(0));
+                }
+
+                var regex = new Regex("{{(.*?)}}");
+                var afmt = models["" + mid]["tmpls"].First["afmt"].ToString();
+                var css = models["" + mid]["css"].ToString();
+                var matches = regex.Matches(afmt);
+                string[] fields = new string[matches.Count];
+
+                int i = 0;
+
+                foreach (Match match in matches)
+                {
+                    fields.SetValue(match.Value.Replace("{{", "").Replace("}}", ""), i);
+                    ++i;
+                }
+                
+                reader.Close();
+
+                _css = css.Replace("\n", "\\n");
+                SetFields(fields);
+                SetFormat(afmt.Replace("\n", "\\n"));
+                
+
+
+                foreach (var res in result)
+                {
+                    AddItem(res);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                _conn.Close();
+                _conn.Dispose();
+                SQLiteConnection.ClearAllPools();
+            }
+        }
+
         #endregion
 
         #endregion
