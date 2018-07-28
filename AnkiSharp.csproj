@@ -75,6 +75,7 @@
     <Compile Include="Helpers\ShortGuid.cs" />
     <Compile Include="Helpers\SQLiteHelper.cs" />
     <Compile Include="Models\CardMetadata.cs" />
+    <Compile Include="Models\RevLogMetadata.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
