@@ -12,7 +12,7 @@ PM> Install-Package AnkiSharp -Version 1.0.0
 
 ### Basic use
 ``` csharp
-AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_FOR_TEMP_FILES_, _NAME_OF_ANKI_PACKAGE_);
+AnkiSharp.Anki test = new AnkiSharp.Anki(_NAME_OF_ANKI_PACKAGE_);
 
 test.AddItem("Hello", "Bonjour");
 test.AddItem("How are you ?", "Comment ca va ?");
@@ -24,7 +24,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 
 ### SetFields
 ``` csharp
-AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_FOR_TEMP_FILES_, _NAME_OF_ANKI_PACKAGE_);
+AnkiSharp.Anki test = new AnkiSharp.Anki(_NAME_OF_ANKI_PACKAGE_);
 
 //Permits to set more than two fields 
 test.SetFields("English", "Spanish", "French");
@@ -39,7 +39,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 
 ### SetCss
 ``` csharp
-AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_FOR_TEMP_FILES_, _NAME_OF_ANKI_PACKAGE_);
+AnkiSharp.Anki test = new AnkiSharp.Anki(_NAME_OF_ANKI_PACKAGE_);
 
 //Permits to change the css of your cards by providing it Css file path
 test.SetCss(_PATH_OF_CSS_FILE_);
@@ -53,7 +53,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
 ### SetFormat
 ``` csharp
-AnkiSharp.Anki test = new AnkiSharp.Anki(_PATH_FOR_TEMP_FILES_, _NAME_OF_ANKI_PACKAGE_);
+AnkiSharp.Anki test = new AnkiSharp.Anki(_NAME_OF_ANKI_PACKAGE_);
 
 test.SetFields("English", "Spanish", "French");
 
@@ -68,6 +68,19 @@ test.AddItem("House", "Casa", "Maison");
 test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
 
+### Create deck from Apkg file
+
+``` csharp
+Anki test = new Anki(new ApkgFile(_PATH_TO_APKG_FILE_)));
+
+// Be careful, keep the same format !
+test.AddItem("Fork", "El tenedor", "La fourchette");
+test.AddItem("Knife", "El cuchillo", "Le couteau");
+test.AddItem("Chopsticks", "Los palillos", "Les baguettes");
+
+test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
+```
+
 ## TO-DO
 
 :ok_hand: = Done
@@ -77,7 +90,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - Add more fields to the cards :ok_hand:
 - Possibility to change the card's CSS :ok_hand:
 - Being able to show what's on the front and on the back of the card :ok_hand:
-- Get the words for other apkg files :zzz:
+- Get the words for other apkg files :ok_hand:
 - Add images and audio :zzz:
 - Generate audio with synthetizer or other tools? (Need to be careful about different languages) :zzz:
 
