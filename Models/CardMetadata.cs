@@ -1,6 +1,6 @@
 ﻿namespace AnkiSharp.Models
 {
-    public struct CardMetadata
+    internal struct CardMetadata
     {
         public double type;
         public double queue;

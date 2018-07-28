@@ -1,6 +1,6 @@
 ﻿namespace AnkiSharp.Models
 {
-    public class Field
+    internal class Field
     {
         #region FIELDS
         private int _ord;

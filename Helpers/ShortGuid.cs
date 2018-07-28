@@ -10,7 +10,7 @@ namespace AnkiSharp.Helpers
     /// Represents a globally unique identifier (GUID) with a
     /// shorter string value. Sguid
     /// </summary>
-    public struct ShortGuid
+    internal struct ShortGuid
     {
         #region Static
 
