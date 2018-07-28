@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace AnkiSharp.Models
 {
-    internal class FieldList : List<Field>
+    public class FieldList : List<Field>
     {
         private string _format;
 
