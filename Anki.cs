@@ -24,7 +24,8 @@ namespace AnkiSharp
         private string _collectionFilePath;
 
         private List<AnkiItem> _ankiItems;
-        private Queue<CardMetadata> _metadatas;
+        private Queue<CardMetadata> _cardsMetadatas;
+        private List<RevLogMetadata> _revLogMetadatas;
         private string _css;
         private string _format;
         #endregion
@@ -43,7 +44,8 @@ namespace AnkiSharp
         /// <param name="path">Where to save your apkg file</param>
         public Anki(string name, string path = null)
         {
-            _metadatas = new Queue<CardMetadata>();
+            _cardsMetadatas = new Queue<CardMetadata>();
+            _revLogMetadatas = new List<RevLogMetadata>();
 
             _assembly = Assembly.GetExecutingAssembly();
 
@@ -65,7 +67,8 @@ namespace AnkiSharp
         /// <param name="file">Apkg file</param>
         public Anki(string name, ApkgFile file)
         {
-            _metadatas = new Queue<CardMetadata>();
+            _cardsMetadatas = new Queue<CardMetadata>();
+            _revLogMetadatas = new List<RevLogMetadata>();
 
             _assembly = Assembly.GetExecutingAssembly();
             _path = Path.Combine(Path.GetDirectoryName(_assembly.Location), "tmp");
@@ -263,15 +266,30 @@ namespace AnkiSharp
                 var id_card = GeneralHelper.GetTimeStampTruncated();
                 string insertCard = "";
 
-                if (_metadatas.Count != 0)
+                if (_cardsMetadatas.Count != 0)
                 {
-                    CardMetadata metadata = _metadatas.Dequeue();
+                    CardMetadata metadata = _cardsMetadatas.Dequeue();
                     insertCard = "INSERT INTO cards VALUES(" + id_card + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, " + metadata.type + ", " + metadata.queue + ", " + metadata.due + ", " + metadata.ivl + ", " + metadata.factor + ", " + metadata.reps + ", " + metadata.lapses + ", " + metadata.left + ", " + metadata.odue + ", " + metadata.odid + ", 0, '');";
                 }
                 else
                     insertCard = "INSERT INTO cards VALUES(" + id_card + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, 0, 0, " + id_note + ", 0, 0, 0, 0, 0, 0, 0, 0, '');";
 
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, insertCard);
+            }
+        }
+
+        private void AddRevlogMetadata()
+        {
+            if (_revLogMetadatas.Count != 0)
+            {
+                string insertRevLog = "";
+
+                foreach (var revlogMetadata in _revLogMetadatas)
+                {
+                    insertRevLog = "INSERT INTO revlog VALUES(" + revlogMetadata.id + ", " + revlogMetadata.cid + ", " + revlogMetadata.usn + ", " + revlogMetadata.ease + ", " + revlogMetadata.ivl + ", " + revlogMetadata.lastivl + ", " + revlogMetadata.factor + ", " + revlogMetadata.time + ", " + revlogMetadata.type + ")";
+
+                    SQLiteHelper.ExecuteSQLiteCommand(_conn, insertRevLog);
+                }
             }
         }
 
@@ -298,6 +316,8 @@ namespace AnkiSharp
 
                 var id_deck = CreateCol();
                 CreateNotesAndCards(id_deck);
+
+                AddRevlogMetadata();
             }
             catch (Exception e)
             {
@@ -353,7 +373,7 @@ namespace AnkiSharp
                 var mid = -1.0;
                 string[] splitted = null;
                 List<string[]> result = new List<string[]>();
-                CardMetadata metadata;
+                CardMetadata cardMetadata;
 
                 while (reader.Read())
                 {
@@ -362,7 +382,7 @@ namespace AnkiSharp
                     mid = reader.GetInt64(1);
                     result.Add(splitted);
 
-                    metadata = new CardMetadata
+                    cardMetadata = new CardMetadata
                     {
                         type = reader.GetInt64(2),
                         queue = reader.GetInt64(3),
@@ -376,7 +396,7 @@ namespace AnkiSharp
                         odid = reader.GetInt64(11)
                     };
 
-                    _metadatas.Enqueue(metadata);
+                    _cardsMetadatas.Enqueue(cardMetadata);
                 }
                 
                 reader.Close();
@@ -403,7 +423,30 @@ namespace AnkiSharp
                 }
                 
                 reader.Close();
-                
+
+                reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT * FROM revlog");
+                RevLogMetadata revLogMetadata;
+
+                while (reader.Read())
+                {
+                    revLogMetadata = new RevLogMetadata()
+                    {
+                        id = reader.GetDouble(0),
+                        cid = reader.GetDouble(1),
+                        usn = reader.GetDouble(2),
+                        ease = reader.GetDouble(3),
+                        ivl = reader.GetDouble(4),
+                        lastivl = reader.GetDouble(5),
+                        factor = reader.GetDouble(6),
+                        time = reader.GetDouble(7),
+                        type = reader.GetDouble(8)
+                    };
+
+                    _revLogMetadatas.Add(revLogMetadata);
+                }
+
+                reader.Close();
+
                 _css = css.Replace("\n", "\\n");
                 SetFields(fields);
                 SetFormat(afmt.Replace("\n", "\\n"));
