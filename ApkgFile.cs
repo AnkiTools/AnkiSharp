@@ -16,6 +16,10 @@ namespace AnkiSharp
             return _path;
         }
 
+        /// <summary>
+        /// Representation of Apkg file
+        /// </summary>
+        /// <param name="path">path of apkg file</param>
         public ApkgFile(string path)
         {
             if (path.Contains(".apkg") == false)

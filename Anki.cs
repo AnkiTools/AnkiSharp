@@ -39,8 +39,8 @@ namespace AnkiSharp
         /// <summary>
         /// Creates a Anki object
         /// </summary>
-        /// <param name="path">Where to save your apkg file</param>
         /// <param name="name">Specify the name of apkg file and deck</param>
+        /// <param name="path">Where to save your apkg file</param>
         public Anki(string name, string path = null)
         {
             _metadatas = new Queue<CardMetadata>();
@@ -58,6 +58,11 @@ namespace AnkiSharp
             Init(_path, name);
         }
 
+        /// <summary>
+        /// Create anki object from an Apkg file
+        /// </summary>
+        /// <param name="name">Specify the name of apkg file and deck</param>
+        /// <param name="file">Apkg file</param>
         public Anki(string name, ApkgFile file)
         {
             _metadatas = new Queue<CardMetadata>();
@@ -115,6 +120,9 @@ namespace AnkiSharp
             CreateZipFile(path);
         }
         
+        /// <summary>
+        /// Creates an AnkiItem and add it to the Anki object
+        /// </summary>
         public void AddItem(params string[] properties)
         {
             if (properties.Length != Fields.Count)
@@ -128,6 +136,9 @@ namespace AnkiSharp
             _ankiItems.Add(item);
         }
 
+        /// <summary>
+        /// Add AnkiItem to the Anki object
+        /// </summary>
         public void AddItem(AnkiItem item)
         {
             if (item.Count != Fields.Count)
@@ -138,6 +149,9 @@ namespace AnkiSharp
             _ankiItems.Add(item);
         }
 
+        /// <summary>
+        /// Tell if the anki object contains an AnkiItem
+        /// </summary>
         public bool ContainsItem(AnkiItem item)
         {
             foreach (var ankiItem in _ankiItems)
