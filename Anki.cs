@@ -51,7 +51,7 @@ namespace AnkiSharp
             Init(_path, name);
         }
 
-        public Anki(ApkgFile file)
+        public Anki(string name, ApkgFile file)
         {
             _assembly = Assembly.GetExecutingAssembly();
             _path = Path.Combine(Path.GetDirectoryName(_assembly.Location), "tmp");
@@ -59,8 +59,8 @@ namespace AnkiSharp
             if (Directory.Exists(_path) == false)
                 Directory.CreateDirectory(_path);
 
-            Init(_path, Path.GetFileName(file.Path()).Replace(".apkg", "_copy"));
-
+            Init(_path, name);
+            
             _collectionFilePath = Path.Combine(_path, "collection.db");
 
             ReadApkgFile(file.Path());
