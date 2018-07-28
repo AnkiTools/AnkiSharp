@@ -49,6 +49,22 @@ namespace AnkiSharp.Models
             
             return true;
         }
+
+        public static bool operator==(AnkiItem first, AnkiItem second)
+        {
+            foreach (var pair in first._dictionary)
+            {
+                if (second._dictionary.ContainsKey(pair.Key) == false && second._dictionary[pair.Key] != pair.Value)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public static bool operator!=(AnkiItem first, AnkiItem second)
+        {
+            return !(first == second);
+        }
         #endregion
     }
 }
