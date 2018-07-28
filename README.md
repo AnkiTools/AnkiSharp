@@ -108,6 +108,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - Possibility to change the card's CSS :ok_hand:
 - Being able to show what's on the front and on the back of the card :ok_hand:
 - Get the words for other apkg files :ok_hand:
+- When added from apkg file, copy cards' metadata (when to review them, ...) :ok_hand:
 - Add images and audio :zzz:
 - Generate audio with synthetizer or other tools? (Need to be careful about different languages) :zzz:
 
