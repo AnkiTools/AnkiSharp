@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme\Anki-icon.svg.png" />
+    <EmbeddedResource Include="SqLiteCommands\Indexes.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
