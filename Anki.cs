@@ -273,13 +273,15 @@ namespace AnkiSharp
                 var cards = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.CardsTable.txt")).ReadToEnd();
                 var revLogs = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.RevLogTable.txt")).ReadToEnd();
                 var graves = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.GravesTable.txt")).ReadToEnd();
+                var indexes = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.Indexes.txt")).ReadToEnd();
 
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, column);
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, notes);
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, cards);
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, revLogs);
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, graves);
-                
+                SQLiteHelper.ExecuteSQLiteCommand(_conn, indexes);
+
                 var id_deck = CreateCol();
                 CreateNotesAndCards(id_deck);
             }
