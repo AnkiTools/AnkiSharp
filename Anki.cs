@@ -30,6 +30,15 @@ namespace AnkiSharp
         private string _format;
         #endregion
 
+        #region PROPERTIES
+
+        public FieldList Fields
+        {
+            get { return _flds; }
+        }
+
+        #endregion
+
         #region CTOR
         /// <summary>
         /// Creates a Anki object
@@ -114,6 +123,24 @@ namespace AnkiSharp
             _ankiItems.Add(new AnkiItem(_flds, properties));
         }
 
+        public void AddItem(AnkiItem item)
+        {
+            if (item.Count != _flds.Count)
+                throw new ArgumentException("Number of fields provided is not the same as the one expected");
+
+            _ankiItems.Add(item);
+        }
+
+        public bool ContainsItem(AnkiItem item)
+        {
+            foreach (var ankiItem in _ankiItems)
+            {
+                if (item == ankiItem)
+                    return true;
+            }
+
+            return false;
+        }
         #endregion
 
         #region PRIVATE
