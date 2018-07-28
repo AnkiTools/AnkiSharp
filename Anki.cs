@@ -120,13 +120,20 @@ namespace AnkiSharp
             if (properties.Length != _flds.Count)
                 throw new ArgumentException("Number of fields provided is not the same as the one expected");
 
-            _ankiItems.Add(new AnkiItem(_flds, properties));
+            AnkiItem item = new AnkiItem(_flds, properties);
+
+            if (ContainsItem(item) == true)
+                return;
+
+            _ankiItems.Add(item);
         }
 
         public void AddItem(AnkiItem item)
         {
             if (item.Count != _flds.Count)
                 throw new ArgumentException("Number of fields provided is not the same as the one expected");
+            else if (ContainsItem(item) == true)
+                return;
 
             _ankiItems.Add(item);
         }
