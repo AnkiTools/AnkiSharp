@@ -71,7 +71,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ### Create deck from Apkg file
 
 ``` csharp
-Anki test = new Anki(new ApkgFile(_PATH_TO_APKG_FILE_)));
+Anki test = new Anki(_NAME_OF_ANKI_PACKAGE_, new ApkgFile(_PATH_TO_APKG_FILE_)));
 
 // Be careful, keep the same format !
 test.AddItem("Fork", "El tenedor", "La fourchette");
