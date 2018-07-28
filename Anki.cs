@@ -263,8 +263,6 @@ namespace AnkiSharp
 
                 //foreach (var selectedWord in _ankiItems)
                 //{
-                    //SynthetizerHelper.PlaySound(_path + @"\", selectedWord.Word.PinYin, selectedWord.Word.Simplified, i.ToString());
-
                    // data += "\"" + i.ToString() + "\": \"" + selectedWord.Front + ".mp3\"";
 
                     //if (i < ankiItems.Count() - 1)
