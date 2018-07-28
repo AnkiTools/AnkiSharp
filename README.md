@@ -81,6 +81,23 @@ test.AddItem("Chopsticks", "Los palillos", "Les baguettes");
 test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
 
+### ContainsItem
+
+``` csharp
+Anki test = new Anki(_NAME_OF_ANKI_PACKAGE_, new ApkgFile(_PATH_TO_APKG_FILE_)));
+
+// Be careful, keep the same format !
+AnkiItem ankiItem = new AnkiItem(test.Fields, "Fork", "El tenedor", "La fourchette");
+test.AddItem(ankiItem);
+
+if (test.ContainsItem(ankiItem) == false)
+    test.AddItem(ankiItem); // will not add
+test.AddItem("Knife", "El cuchillo", "Le couteau");
+test.AddItem("Chopsticks", "Los palillos", "Les baguettes");
+
+test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
+```
+
 ## TO-DO
 
 :ok_hand: = Done
