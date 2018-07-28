@@ -55,10 +55,7 @@ namespace AnkiSharp.Models
             foreach (var pair in first._dictionary)
             {
                 if (second._dictionary[pair.Key].ToString() != pair.Value.ToString())
-                {
-                    System.Console.WriteLine(second._dictionary[pair.Key] + " and " + pair.Value + " are not equal");
                     return false;
-                }
             }
 
             return true;
