@@ -24,18 +24,14 @@ namespace AnkiSharp
         private string _collectionFilePath;
 
         private List<AnkiItem> _ankiItems;
-        
-        private FieldList _flds;
+        private Queue<CardMetadata> _metadatas;
         private string _css;
         private string _format;
         #endregion
 
         #region PROPERTIES
 
-        public FieldList Fields
-        {
-            get { return _flds; }
-        }
+        public FieldList Fields { get; private set; }
 
         #endregion
 
@@ -47,6 +43,8 @@ namespace AnkiSharp
         /// <param name="name">Specify the name of apkg file and deck</param>
         public Anki(string name, string path = null)
         {
+            _metadatas = new Queue<CardMetadata>();
+
             _assembly = Assembly.GetExecutingAssembly();
 
             if (path == null)
@@ -62,6 +60,8 @@ namespace AnkiSharp
 
         public Anki(string name, ApkgFile file)
         {
+            _metadatas = new Queue<CardMetadata>();
+
             _assembly = Assembly.GetExecutingAssembly();
             _path = Path.Combine(Path.GetDirectoryName(_assembly.Location), "tmp");
 
@@ -81,10 +81,10 @@ namespace AnkiSharp
         #region SETTERS
         public void SetFields(params string[] values)
         {
-            _flds.Clear();
+            Fields.Clear();
             foreach (var value in values)
             {
-                _flds.Add(new Field(value));
+                Fields.Add(new Field(value));
             }
         }
 
@@ -117,10 +117,10 @@ namespace AnkiSharp
         
         public void AddItem(params string[] properties)
         {
-            if (properties.Length != _flds.Count)
+            if (properties.Length != Fields.Count)
                 throw new ArgumentException("Number of fields provided is not the same as the one expected");
 
-            AnkiItem item = new AnkiItem(_flds, properties);
+            AnkiItem item = new AnkiItem(Fields, properties);
 
             if (ContainsItem(item) == true)
                 return;
@@ -130,7 +130,7 @@ namespace AnkiSharp
 
         public void AddItem(AnkiItem item)
         {
-            if (item.Count != _flds.Count)
+            if (item.Count != Fields.Count)
                 throw new ArgumentException("Number of fields provided is not the same as the one expected");
             else if (ContainsItem(item) == true)
                 return;
@@ -159,7 +159,7 @@ namespace AnkiSharp
 
             _path = path;
 
-            _flds = new FieldList
+            Fields = new FieldList
             {
                 new Field("Front"),
                 new Field("Back")
@@ -197,10 +197,10 @@ namespace AnkiSharp
             var models = modelsFileContent.Replace("{CSS}", _css);
             models = models.Replace("{ID_DECK}", id_deck.ToString());
 
-            var json = _flds.ToJSON();
+            var json = Fields.ToJSON();
             models = models.Replace("{FLDS}", json);
 
-            var format = _format != null ? _flds.Format(_format) : _flds.ToString();
+            var format = _format != null ? Fields.Format(_format) : Fields.ToString();
             var qfmt = Regex.Split(format, "<br>")[0];
             var afmt = format;
             
@@ -227,8 +227,8 @@ namespace AnkiSharp
                 var guid = ((ShortGuid)Guid.NewGuid()).ToString().Substring(0, 10);
                 var mid = "1342697561419";
                 var mod = GeneralHelper.GetTimeStampTruncated();
-                var flds = GeneralHelper.ConcatFields(_flds, ankiItem, "\x1f");
-                string sfld = ankiItem[_flds[0].Name].ToString();
+                var flds = GeneralHelper.ConcatFields(Fields, ankiItem, "\x1f");
+                string sfld = ankiItem[Fields[0].Name].ToString();
                 var csum = "";
 
                 using (SHA1Managed sha1 = new SHA1Managed())
@@ -247,7 +247,15 @@ namespace AnkiSharp
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, insertNote);
 
                 var id_card = GeneralHelper.GetTimeStampTruncated();
-                string insertCard = "INSERT INTO cards VALUES(" + id_card + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, 0, 0, " + id_note + ", 0, 0, 0, 0, 0, 0, 0, 0, '');";
+                string insertCard = "";
+
+                if (_metadatas.Count != 0)
+                {
+                    CardMetadata metadata = _metadatas.Dequeue();
+                    insertCard = "INSERT INTO cards VALUES(" + id_card + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, " + metadata.type + ", " + metadata.queue + ", " + metadata.due + ", " + metadata.ivl + ", " + metadata.factor + ", " + metadata.reps + ", " + metadata.lapses + ", " + metadata.left + ", " + metadata.odue + ", " + metadata.odid + ", 0, '');";
+                }
+                else
+                    insertCard = "INSERT INTO cards VALUES(" + id_card + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, 0, 0, " + id_note + ", 0, 0, 0, 0, 0, 0, 0, 0, '');";
 
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, insertCard);
             }
@@ -325,10 +333,11 @@ namespace AnkiSharp
             try
             {
                 _conn.Open();
-                SQLiteDataReader reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT flds, mid FROM notes");
+                SQLiteDataReader reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT notes.flds, notes.mid, cards.type, cards.queue, cards.due, cards.ivl, cards.factor, cards.reps, cards.lapses, cards.left, cards.odue, cards.odid FROM notes, cards WHERE cards.nid == notes.id;");
                 var mid = -1.0;
                 string[] splitted = null;
                 List<string[]> result = new List<string[]>();
+                CardMetadata metadata;
 
                 while (reader.Read())
                 {
@@ -336,6 +345,22 @@ namespace AnkiSharp
 
                     mid = reader.GetInt64(1);
                     result.Add(splitted);
+
+                    metadata = new CardMetadata
+                    {
+                        type = reader.GetInt64(2),
+                        queue = reader.GetInt64(3),
+                        due = reader.GetInt64(4),
+                        ivl = reader.GetInt64(5),
+                        factor = reader.GetInt64(6),
+                        reps = reader.GetInt64(7),
+                        lapses = reader.GetInt64(8),
+                        left = reader.GetInt64(9),
+                        odue = reader.GetInt64(10),
+                        odid = reader.GetInt64(11)
+                    };
+
+                    _metadatas.Enqueue(metadata);
                 }
                 
                 reader.Close();
@@ -362,13 +387,11 @@ namespace AnkiSharp
                 }
                 
                 reader.Close();
-
+                
                 _css = css.Replace("\n", "\\n");
                 SetFields(fields);
                 SetFormat(afmt.Replace("\n", "\\n"));
                 
-
-
                 foreach (var res in result)
                 {
                     AddItem(res);
