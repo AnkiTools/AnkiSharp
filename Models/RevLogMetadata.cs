@@ -1,15 +1,15 @@
 ﻿namespace AnkiSharp.Models
 {
-    struct RevLogMetadata
+    internal class RevLogMetadata
     {
-        public double id;
-        public double cid;
-        public double usn;
-        public double ease;
-        public double ivl;
-        public double lastivl;
-        public double factor;
-        public double time;
-        public double type;
+        public double id { get; set; }
+        public double cid { get; set; }
+        public double usn { get; set; }
+        public double ease { get; set; }
+        public double ivl { get; set; }
+        public double lastIvl { get; set; }
+        public double factor { get; set; }
+        public double time { get; set; }
+        public double type { get; set; }
     }
 }
