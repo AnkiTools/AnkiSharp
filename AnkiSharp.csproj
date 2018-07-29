@@ -56,6 +56,10 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.108.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -67,8 +71,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Anki.cs" />
+    <Compile Include="Helpers\Mapper.cs" />
     <Compile Include="Models\AnkiItem.cs" />
     <Compile Include="ApkgFile.cs" />
+    <Compile Include="Models\AnkiSharpDynamic.cs" />
     <Compile Include="Models\Field.cs" />
     <Compile Include="Models\FieldList.cs" />
     <Compile Include="Helpers\GeneralHelper.cs" />
