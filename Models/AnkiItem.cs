@@ -35,8 +35,7 @@ namespace AnkiSharp.Models
         #endregion
 
         #region FUNCTIONS
-        public override bool TryGetMember(
-        GetMemberBinder binder, out object result)
+        public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             string name = binder.Name.ToLower();
             
