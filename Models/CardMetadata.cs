@@ -1,16 +1,16 @@
 ﻿namespace AnkiSharp.Models
 {
-    internal struct CardMetadata
+    internal class CardMetadata
     {
-        public double type;
-        public double queue;
-        public double due;
-        public double ivl;
-        public double factor;
-        public double reps;
-        public double lapses;
-        public double left;
-        public double odue;
-        public double odid;
+        public double type { get; set; }
+        public double queue { get; set; }
+        public double due { get; set; }
+        public double ivl { get; set; }
+        public double factor { get; set; }
+        public double reps { get; set; }
+        public double lapses { get; set; }
+        public double left { get; set; }
+        public double odue { get; set; }
+        public double odid { get; set; }
     }
 }
