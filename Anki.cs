@@ -286,7 +286,7 @@ namespace AnkiSharp
 
                 foreach (var revlogMetadata in _revLogMetadatas)
                 {
-                    insertRevLog = "INSERT INTO revlog VALUES(" + revlogMetadata.id + ", " + revlogMetadata.cid + ", " + revlogMetadata.usn + ", " + revlogMetadata.ease + ", " + revlogMetadata.ivl + ", " + revlogMetadata.lastivl + ", " + revlogMetadata.factor + ", " + revlogMetadata.time + ", " + revlogMetadata.type + ")";
+                    insertRevLog = "INSERT INTO revlog VALUES(" + revlogMetadata.id + ", " + revlogMetadata.cid + ", " + revlogMetadata.usn + ", " + revlogMetadata.ease + ", " + revlogMetadata.ivl + ", " + revlogMetadata.lastIvl + ", " + revlogMetadata.factor + ", " + revlogMetadata.time + ", " + revlogMetadata.type + ")";
 
                     SQLiteHelper.ExecuteSQLiteCommand(_conn, insertRevLog);
                 }
@@ -369,11 +369,21 @@ namespace AnkiSharp
             try
             {
                 _conn.Open();
-                SQLiteDataReader reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT notes.flds, notes.mid, cards.type, cards.queue, cards.due, cards.ivl, cards.factor, cards.reps, cards.lapses, cards.left, cards.odue, cards.odid FROM notes, cards WHERE cards.nid == notes.id;");
+
+                Mapper mapper = Mapper.Instance;
+
+                var cardMetadatas = Mapper.MapSQLiteReader(_conn, "SELECT cards.type, cards.queue, cards.due, cards.ivl, cards.factor, cards.reps, cards.lapses, cards.left, cards.odue, cards.odid FROM notes, cards WHERE cards.nid == notes.id;");
+
+                foreach (var cardMetadata in cardMetadatas)
+                {
+                    _cardsMetadatas.Enqueue(cardMetadata.ToObject<CardMetadata>());
+                }
+
+                SQLiteDataReader reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT notes.flds, notes.mid FROM notes;");
                 var mid = -1.0;
                 string[] splitted = null;
                 List<string[]> result = new List<string[]>();
-                CardMetadata cardMetadata;
+
 
                 while (reader.Read())
                 {
@@ -381,24 +391,8 @@ namespace AnkiSharp
 
                     mid = reader.GetInt64(1);
                     result.Add(splitted);
-
-                    cardMetadata = new CardMetadata
-                    {
-                        type = reader.GetInt64(2),
-                        queue = reader.GetInt64(3),
-                        due = reader.GetInt64(4),
-                        ivl = reader.GetInt64(5),
-                        factor = reader.GetInt64(6),
-                        reps = reader.GetInt64(7),
-                        lapses = reader.GetInt64(8),
-                        left = reader.GetInt64(9),
-                        odue = reader.GetInt64(10),
-                        odid = reader.GetInt64(11)
-                    };
-
-                    _cardsMetadatas.Enqueue(cardMetadata);
                 }
-                
+
                 reader.Close();
                 reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT models FROM col");
                 JObject models = null;
@@ -424,28 +418,14 @@ namespace AnkiSharp
                 
                 reader.Close();
 
-                reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT * FROM revlog");
-                RevLogMetadata revLogMetadata;
+                var revLogMetadatas = Mapper.MapSQLiteReader(_conn, "SELECT * FROM revlog");
 
-                while (reader.Read())
+                Console.WriteLine(revLogMetadatas.Count);
+
+                foreach (var revLogMetadata in revLogMetadatas)
                 {
-                    revLogMetadata = new RevLogMetadata()
-                    {
-                        id = reader.GetDouble(0),
-                        cid = reader.GetDouble(1),
-                        usn = reader.GetDouble(2),
-                        ease = reader.GetDouble(3),
-                        ivl = reader.GetDouble(4),
-                        lastivl = reader.GetDouble(5),
-                        factor = reader.GetDouble(6),
-                        time = reader.GetDouble(7),
-                        type = reader.GetDouble(8)
-                    };
-
-                    _revLogMetadatas.Add(revLogMetadata);
+                    _revLogMetadatas.Add(revLogMetadata.ToObject<RevLogMetadata>());
                 }
-
-                reader.Close();
 
                 _css = css.Replace("\n", "\\n");
                 SetFields(fields);
