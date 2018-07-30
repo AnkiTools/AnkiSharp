@@ -114,6 +114,10 @@ namespace AnkiSharp
         public void CreateApkgFile(string path)
         {
             _collectionFilePath = Path.Combine(_path, "collection.db");
+
+            if (File.Exists(_collectionFilePath) == true)
+                File.Delete(_collectionFilePath);
+
             File.Create(_collectionFilePath).Close();
 
             CreateMediaFile();
@@ -192,6 +196,9 @@ namespace AnkiSharp
 
             File.Move(_collectionFilePath, anki2FilePath);
             string zipPath = Path.Combine(path, _name + ".apkg");
+
+            if (File.Exists(zipPath) == true)
+                File.Delete(zipPath);
 
             ZipFile.CreateFromDirectory(_path, zipPath);
 
@@ -334,6 +341,10 @@ namespace AnkiSharp
         private void CreateMediaFile()
         {
             string mediaFilePath = Path.Combine(_path, "media");
+
+            if (File.Exists(mediaFilePath) == true)
+                File.Delete(mediaFilePath);
+
             using (FileStream fs = File.Create(mediaFilePath))
             {
                 string data = "{";
