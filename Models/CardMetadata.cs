@@ -2,8 +2,8 @@
 {
     internal class CardMetadata
     {
-        public double type { get; set; }
-        public double queue { get; set; }
+        public int type { get; set; }
+        public int queue { get; set; }
         public double due { get; set; }
         public double ivl { get; set; }
         public double factor { get; set; }
