@@ -110,7 +110,6 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - Get the words for other apkg files :ok_hand:
 - When added from apkg file, copy cards' metadata (when to review them, ...) :ok_hand:
 - Copy the revlog entries :ok_hand:
-- Find where are stored the statistics of review for a deck and handle the copy :zzz:
 - Optimize CardMetadata and RevLogMetadata struct (doesn't need to be all doubles) :zzz:
 - Refactoring :zzz:
 - Add images and audio :zzz:
