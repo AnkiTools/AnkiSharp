@@ -110,7 +110,8 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - Get the words for other apkg files :ok_hand:
 - When added from apkg file, copy cards' metadata (when to review them, ...) :ok_hand:
 - Copy the revlog entries :ok_hand:
-- Optimize CardMetadata and RevLogMetadata struct (doesn't need to be all doubles) :zzz:
+- Optimize CardMetadata and RevLogMetadata struct (doesn't need to be all doubles) :ok_hand:
+- If apkg or temp files already exists remove them :ok_hand:
 - Refactoring :zzz:
 - Add images and audio :zzz:
 - Generate audio with synthetizer or other tools? (Need to be careful about different languages) :zzz:
