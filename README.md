@@ -7,7 +7,7 @@
 ### Nuget
 
 ```
-PM> Install-Package AnkiSharp -Version 1.0.0
+PM> Install-Package AnkiSharp -Version 1.1.0
 ```
 
 ### Basic use
