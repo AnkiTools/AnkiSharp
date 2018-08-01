@@ -113,7 +113,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - Optimize CardMetadata and RevLogMetadata struct (doesn't need to be all doubles) :ok_hand:
 - If apkg or temp files already exists remove them :ok_hand:
 - Instantiate with multiple apkg file ? :zzz:
-- ContainsItem with lambda as parameter to compare two objects :zzz:
+- ContainsItem with lambda as parameter to compare two objects :ok_hand:
 - Refactoring :zzz:
 - Add images and audio :zzz:
 - Generate audio with synthetizer or other tools? (Need to be careful about different languages) :zzz:
