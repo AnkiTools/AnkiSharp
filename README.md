@@ -55,8 +55,8 @@ AnkiSharp.Anki test = new AnkiSharp.Anki(_NAME_OF_ANKI_PACKAGE_);
 
 test.SetFields("English", "Spanish", "French");
 
-//Everything before '<br>' is the front of the card, everything after is the behind
-test.SetFormat("{0} - {1} \\n<br>\\n {2}");
+//Everything before '<hr id=answer>' is the front of the card, everything after is the behind
+test.SetFormat("{0} - {1} \\n<hr id=answer>\\n {2}");
 
 test.AddItem("Hello", "Hola", "Bonjour");
 test.AddItem("How are you ?", "Como estas?",  "Comment ca va ?");
