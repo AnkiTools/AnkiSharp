@@ -242,7 +242,7 @@ namespace AnkiSharp
             models = models.Replace("{FLDS}", json);
 
             var format = _format != null ? Fields.Format(_format) : Fields.ToString();
-            var qfmt = Regex.Split(format, "<br>")[0];
+            var qfmt = Regex.Split(format, "<hr id=answer>")[0];
             var afmt = format;
             
             models = models.Replace("{QFMT}", qfmt).Replace("{AFMT}", afmt).Replace("\r\n", "");
@@ -268,7 +268,7 @@ namespace AnkiSharp
                 var guid = ((ShortGuid)Guid.NewGuid()).ToString().Substring(0, 10);
                 var mid = "1342697561419";
                 var mod = GeneralHelper.GetTimeStampTruncated();
-                var flds = GeneralHelper.ConcatFields(Fields, ankiItem, "\x1f");
+                var flds = GeneralHelper.ConcatFields(Fields, ankiItem, "\x1f").Replace("'", "’");
                 string sfld = ankiItem[Fields[0].Name].ToString();
                 var csum = "";
 
@@ -421,7 +421,7 @@ namespace AnkiSharp
                 while (reader.Read())
                 {
                     splitted = reader.GetString(0).Split('\x1f');
-
+                    
                     mid = reader.GetInt64(1);
                     result.Add(splitted);
                 }
@@ -461,7 +461,12 @@ namespace AnkiSharp
                 _css = css.Replace("\n", "\\n");
                 SetFields(fields);
                 SetFormat(afmt.Replace("\n", "\\n"));
-                
+
+                foreach (var res in fields)
+                {
+                    Console.WriteLine(res);
+                }
+
                 foreach (var res in result)
                 {
                     AddItem(res);
