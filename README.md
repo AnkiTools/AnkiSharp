@@ -84,16 +84,26 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ### ContainsItem
 
 ``` csharp
-Anki test = new Anki(_NAME_OF_ANKI_PACKAGE_, new ApkgFile(_PATH_TO_APKG_FILE_)));
+Anki test = new Anki(_NAME_OF_ANKI_PACKAGE_, new ApkgFile(_PATH_TO_APKG_FILE_));
 
-// Be careful, keep the same format !
+// Be careful, keep the same fields !
 AnkiItem ankiItem = new AnkiItem(test.Fields, "Fork", "El tenedor", "La fourchette");
-test.AddItem(ankiItem);
 
-if (test.ContainsItem(ankiItem) == false)
-    test.AddItem(ankiItem); // will not add
-test.AddItem("Knife", "El cuchillo", "Le couteau");
-test.AddItem("Chopsticks", "Los palillos", "Les baguettes");
+if (test.ContainsItem(ankiItem) == false) // will not add if the card is entirely the same (same fields' value)
+    test.AddItem(ankiItem);
+
+test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
+```
+
+### ContainsItem with lambda
+
+``` csharp
+Anki test = new Anki(_NAME_OF_ANKI_PACKAGE_, new ApkgFile(_PATH_TO_APKG_FILE_));
+
+AnkiItem item = new AnkiItem(test.Fields, "Hello", "Bonjour");
+
+if (test.ContainsItem(x => { return Equals(item["Front"], x["Front"]); }) == false) // will not add if front of the card already exists
+    test.AddItem(item);
 
 test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
