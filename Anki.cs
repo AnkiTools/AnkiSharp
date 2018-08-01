@@ -359,7 +359,7 @@ namespace AnkiSharp
         {
             string mediaFilePath = Path.Combine(_path, "media");
 
-            if (File.Exists(mediaFilePath) == true)
+            if (File.Exists(mediaFilePath))
                 File.Delete(mediaFilePath);
 
             using (FileStream fs = File.Create(mediaFilePath))
@@ -386,6 +386,12 @@ namespace AnkiSharp
 
         public void ReadApkgFile(string path)
         {
+            if (File.Exists(Path.Combine(_path, "collection.db")) && File.Exists(Path.Combine(_path, "media")))
+            {
+                File.Delete(Path.Combine(_path, "collection.db"));
+                File.Delete(Path.Combine(_path, "media"));
+            }
+
             ZipFile.ExtractToDirectory(path, _path);
 
             string anki2File = Path.Combine(_path, "collection.anki2");
@@ -447,9 +453,7 @@ namespace AnkiSharp
                 reader.Close();
 
                 var revLogMetadatas = Mapper.MapSQLiteReader(_conn, "SELECT * FROM revlog");
-
-                Console.WriteLine(revLogMetadatas.Count);
-
+                
                 foreach (var revLogMetadata in revLogMetadatas)
                 {
                     _revLogMetadatas.Add(revLogMetadata.ToObject<RevLogMetadata>());
