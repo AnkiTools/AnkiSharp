@@ -199,7 +199,7 @@ namespace AnkiSharp
 
             Fields = new FieldList
             {
-                new Field("Front"),
+                new Field("FrontSide"),
                 new Field("Back")
             };
 
@@ -386,11 +386,11 @@ namespace AnkiSharp
 
         public void ReadApkgFile(string path)
         {
-            if (File.Exists(Path.Combine(_path, "collection.db")) && File.Exists(Path.Combine(_path, "media")))
-            {
+            if (File.Exists(Path.Combine(_path, "collection.db")))
                 File.Delete(Path.Combine(_path, "collection.db"));
+
+            if (File.Exists(Path.Combine(_path, "media")))
                 File.Delete(Path.Combine(_path, "media"));
-            }
 
             ZipFile.ExtractToDirectory(path, _path);
 
@@ -417,8 +417,7 @@ namespace AnkiSharp
                 var mid = -1.0;
                 string[] splitted = null;
                 List<string[]> result = new List<string[]>();
-
-
+                
                 while (reader.Read())
                 {
                     splitted = reader.GetString(0).Split('\x1f');
