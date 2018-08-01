@@ -3,6 +3,7 @@ using AnkiSharp.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.SQLite;
 using System.IO;
 using System.IO.Compression;
@@ -161,12 +162,25 @@ namespace AnkiSharp
         /// </summary>
         public bool ContainsItem(AnkiItem item)
         {
+            int matching = 1;
+
             foreach (var ankiItem in _ankiItems)
             {
                 if (item == ankiItem)
-                    return true;
+                    ++matching;
             }
 
+            return matching == item.Count ? true : false;
+        }
+
+        public bool ContainsItem(Func<AnkiItem, bool> comparison)
+        {
+            foreach (var ankiItem in _ankiItems)
+            {
+                if (comparison(ankiItem))
+                    return true;
+            }
+            
             return false;
         }
         #endregion
