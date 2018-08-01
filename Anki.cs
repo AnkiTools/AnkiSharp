@@ -185,6 +185,7 @@ namespace AnkiSharp
             
             return false;
         }
+        
         #endregion
 
         #region PRIVATE
