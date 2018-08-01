@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using System;
+using System.Data.SQLite;
 
 namespace AnkiSharp.Helpers
 {
@@ -6,17 +7,31 @@ namespace AnkiSharp.Helpers
     {
         internal static void ExecuteSQLiteCommand(SQLiteConnection conn, string toExecute)
         {
-            using (SQLiteCommand command = new SQLiteCommand(toExecute, conn))
+            try
             {
-                command.ExecuteNonQuery();
+                using (SQLiteCommand command = new SQLiteCommand(toExecute, conn))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Can't execute query : " + toExecute);
             }
         }
 
         internal static SQLiteDataReader ExecuteSQLiteCommandRead(SQLiteConnection conn, string toExecute)
         {
-            using (SQLiteCommand command = new SQLiteCommand(toExecute, conn))
+            try
             {
-                return command.ExecuteReader();
+                using (SQLiteCommand command = new SQLiteCommand(toExecute, conn))
+                {
+                    return command.ExecuteReader();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Can't execute query : " + toExecute);
             }
         }
     }
