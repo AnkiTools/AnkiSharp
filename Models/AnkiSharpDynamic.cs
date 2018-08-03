@@ -64,9 +64,9 @@ namespace AnkiSharp.Models
             return !(first == second);
         }
 
-        public T ToObject<T>() where T : new()
+        public T ToObject<T>(T obj = null) where T : class, new()
         {
-            T result = new T();
+            T result = obj ?? new T();
             PropertyInfo propertyInfo;
 
             foreach (var pair in _dictionary)
