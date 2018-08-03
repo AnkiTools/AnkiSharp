@@ -5,6 +5,7 @@ namespace AnkiSharp.Helpers
 {
     internal class SQLiteHelper
     {
+    
         internal static void ExecuteSQLiteCommand(SQLiteConnection conn, string toExecute)
         {
             try
@@ -33,6 +34,21 @@ namespace AnkiSharp.Helpers
             {
                 throw new Exception("Can't execute query : " + toExecute);
             }
+        }
+
+        internal static string CreateStringFormat(int from, int to)
+        {
+            string result = "";
+
+            for (int i = from; i < to; ++i)
+            {
+                result += "{" + i.ToString() + "}";
+
+                if (i + 1 < to)
+                    result += ", ";
+            }
+
+            return result;
         }
     }
 }
