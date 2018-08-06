@@ -15,7 +15,7 @@ namespace AnkiSharp.Helpers
                     command.ExecuteNonQuery();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Can't execute query : " + toExecute);
             }
@@ -30,7 +30,7 @@ namespace AnkiSharp.Helpers
                     return command.ExecuteReader();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Can't execute query : " + toExecute);
             }
