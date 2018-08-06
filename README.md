@@ -123,6 +123,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - ContainsItem with lambda as parameter to compare two objects :ok_hand:
 - A deck can have different fields for the cards :ok_hand:
 - sub deck support :zzz:
+- synchronize with ankiweb ? :zzz:
 - Refactoring :zzz:
 - Add images and audio :zzz:
 - Generate audio with synthetizer or other tools? (Need to be careful about different languages) :zzz:
