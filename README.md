@@ -121,7 +121,8 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - Optimize CardMetadata and RevLogMetadata struct (doesn't need to be all doubles) :ok_hand:
 - If apkg or temp files already exists remove them :ok_hand:
 - ContainsItem with lambda as parameter to compare two objects :ok_hand:
-- A deck can have different fields for the cards :zzz:
+- A deck can have different fields for the cards :ok_hand:
+- sub deck support :zzz:
 - Refactoring :zzz:
 - Add images and audio :zzz:
 - Generate audio with synthetizer or other tools? (Need to be careful about different languages) :zzz:
