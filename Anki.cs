@@ -10,12 +10,15 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Collections;
 
 namespace AnkiSharp
 {
     public class Anki
     { 
-        #region FIELDS
+        #region MEMBERS
         private SQLiteConnection _conn;
 
         private string _name;
@@ -26,16 +29,12 @@ namespace AnkiSharp
         private List<AnkiItem> _ankiItems;
         private Queue<CardMetadata> _cardsMetadatas;
         private List<RevLogMetadata> _revLogMetadatas;
-        private string _css;
-        private string _format;
+
+        //   MID         FORMAT    CSS
+        // string, Tuple<string, string, FieldList>
+        OrderedDictionary _infoPerMid;
         #endregion
-
-        #region PROPERTIES
-
-        public FieldList Fields { get; private set; }
-
-        #endregion
-
+        
         #region CTOR
         /// <summary>
         /// Creates a Anki object
@@ -89,21 +88,34 @@ namespace AnkiSharp
         #region SETTERS
         public void SetFields(params string[] values)
         {
-            Fields.Clear();
+            FieldList fields = new FieldList();
+
             foreach (var value in values)
             {
-                Fields.Add(new Field(value));
+                fields.Add(new Field(value));
             }
+
+            var currentDefault = _infoPerMid["DEFAULT"] as Tuple<string, string, FieldList>;
+            Tuple<string, string, FieldList> newDefault = new Tuple<string, string, FieldList>(currentDefault.Item1, currentDefault.Item2, fields);
+
+            _infoPerMid["DEFAULT"] = newDefault;
         }
 
         public void SetCss(string filepath)
         {
-            _css = new StreamReader(filepath).ReadToEnd();
+            var css = new StreamReader(filepath).ReadToEnd();
+            var currentDefault = _infoPerMid["DEFAULT"] as Tuple<string, string, FieldList>;
+            Tuple<string, string, FieldList> newDefault = new Tuple<string, string, FieldList>(currentDefault.Item1, css, currentDefault.Item3);
+
+            _infoPerMid["DEFAULT"] = newDefault;
         }
 
         public void SetFormat(string format)
         {
-            _format = format;
+            var currentDefault = _infoPerMid["DEFAULT"] as Tuple<string, string, FieldList>;
+            Tuple<string, string, FieldList> newDefault = new Tuple<string, string, FieldList>(format, currentDefault.Item2, currentDefault.Item3);
+
+            _infoPerMid["DEFAULT"] = newDefault;
         }
         #endregion
 
@@ -132,10 +144,25 @@ namespace AnkiSharp
         /// </summary>
         public void AddItem(params string[] properties)
         {
-            if (properties.Length != Fields.Count)
+            var mid = "";
+            IDictionaryEnumerator myEnumerator = _infoPerMid.GetEnumerator();
+
+            while (myEnumerator.MoveNext())
+            {
+                if (IsRightFieldList((myEnumerator.Value as Tuple<string, string, FieldList>).Item3, properties))
+                {
+                    mid = myEnumerator.Key.ToString();
+                    break;
+                }   
+            }
+
+            if (_infoPerMid.Contains(mid) && properties.Length != (_infoPerMid[mid] as Tuple<string, string, FieldList>).Item3.Count)
                 throw new ArgumentException("Number of fields provided is not the same as the one expected");
 
-            AnkiItem item = new AnkiItem(Fields, properties);
+            AnkiItem item = new AnkiItem((_infoPerMid[mid] as Tuple<string, string, FieldList>).Item3, properties)
+            {
+                Mid = mid
+            };
 
             if (ContainsItem(item) == true)
                 return;
@@ -148,7 +175,10 @@ namespace AnkiSharp
         /// </summary>
         public void AddItem(AnkiItem item)
         {
-            if (item.Count != Fields.Count)
+            if (item.Mid == "")
+                item.Mid = (_infoPerMid.Keys as IEnumerable<string>).Last();
+
+            if (_infoPerMid.Contains(item.Mid) && item.Count != (_infoPerMid[item.Mid] as Tuple<string, string, FieldList>).Item3.Count)
                 throw new ArgumentException("Number of fields provided is not the same as the one expected");
             else if (ContainsItem(item) == true)
                 return;
@@ -162,7 +192,7 @@ namespace AnkiSharp
         public bool ContainsItem(AnkiItem item)
         {
             int matching = 1;
-
+            
             foreach (var ankiItem in _ankiItems)
             {
                 if (item == ankiItem)
@@ -189,21 +219,42 @@ namespace AnkiSharp
         #endregion
 
         #region PRIVATE
+
         private void Init(string path, string name)
         {
+            _infoPerMid = new OrderedDictionary();
             _name = name;
             _ankiItems = new List<AnkiItem>();
             _assembly = Assembly.GetExecutingAssembly();
 
             _path = path;
 
-            Fields = new FieldList
+            var css = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.CardStyle.css")).ReadToEnd();
+            var fields = new FieldList
             {
                 new Field("FrontSide"),
                 new Field("Back")
             };
 
-            _css = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.CardStyle.css")).ReadToEnd();
+            _infoPerMid.Add("DEFAULT", new Tuple<string, string, FieldList>("", css, fields));
+        }
+
+        private bool IsRightFieldList(FieldList list, string[] properties)
+        {
+            if (list.Count != properties.Length)
+                return false;
+
+            return true;
+            //int count = 0;
+
+            //for (int i = 0; i < list.Count; ++i)
+            //{
+            //    Console.WriteLine("{0} - {1}", list[i].Name, properties[i]);
+            //    if (list[i].Name == properties[i])
+            //        ++count;
+            //}
+
+            //return count == list.Count - 1 ? true : false;
         }
 
         private void CreateZipFile(string path)
@@ -235,25 +286,49 @@ namespace AnkiSharp
             var id_deck = GeneralHelper.GetTimeStampTruncated();
 
             var modelsFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.models.json")).ReadToEnd();
-            var models = modelsFileContent.Replace("{CSS}", _css);
-            models = models.Replace("{ID_DECK}", id_deck.ToString());
 
-            var json = Fields.ToJSON();
-            models = models.Replace("{FLDS}", json);
+            StringBuilder models = new StringBuilder();
 
-            var format = _format != null ? Fields.Format(_format) : Fields.ToString();
-            var qfmt = Regex.Split(format, "<hr id=answer>")[0];
-            var afmt = format;
-            
-            models = models.Replace("{QFMT}", qfmt).Replace("{AFMT}", afmt).Replace("\r\n", "");
-            
+            foreach (var key in _infoPerMid.Keys.Cast<string>().ToList())
+            {
+                var obj = (_infoPerMid[key] as Tuple<string, string, FieldList>);
+
+                if (models.Length > 0)
+                    models.Append(", ");
+
+                if (key.ToString() == "DEFAULT")
+                {
+                    var newMid = GeneralHelper.GetTimeStampTruncated().ToString();
+                    var newEntry = _infoPerMid["DEFAULT"];
+
+                    _infoPerMid.Add(newMid, newEntry);
+                    _ankiItems.ForEach(x => x.Mid = x.Mid == "DEFAULT" ? newMid : x.Mid);
+                    models.Append(modelsFileContent.Replace("{MID}", newMid));
+                }
+                else
+                    models.Append(modelsFileContent.Replace("{MID}", key as string));
+
+                models = models.Replace("{CSS}", obj.Item2);
+                models = models.Replace("{ID_DECK}", id_deck.ToString());
+
+                var json = obj.Item3.ToJSON();
+                models = models.Replace("{FLDS}", json);
+
+                var format = obj.Item1 != "" ? obj.Item3.Format(obj.Item1) : obj.Item3.ToString();
+
+                var qfmt = Regex.Split(format, "<hr id=answer(.*?)>|<br>")[0];
+                var afmt = format;
+
+                models = models.Replace("{QFMT}", qfmt).Replace("{AFMT}", afmt).Replace("\r\n", "");
+            }
+
             var deckFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.decks.json")).ReadToEnd();
             var deck = deckFileContent.Replace("{NAME}", _name).Replace("{ID_DECK}", id_deck.ToString()).Replace("\r\n", "");
 
             var dconfFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.dconf.json")).ReadToEnd();
             var dconf = dconfFileContent.Replace("\r\n", "");
 
-            string insertCol = "INSERT INTO col VALUES(1, " + crt + ", " + timeStamp + ", " + timeStamp + ", 11, 0, 0, 0, '" + conf + "', '" + models + "', '" + deck + "', '" + dconf + "', " + "'{}'" + ");";
+            string insertCol = "INSERT INTO col VALUES(1, " + crt + ", " + timeStamp + ", " + timeStamp + ", 11, 0, 0, 0, '" + conf + "', '{" + models.ToString() + "}', '" + deck + "', '" + dconf + "', " + "'{}'" + ");";
 
             SQLiteHelper.ExecuteSQLiteCommand(_conn, insertCol);
 
@@ -264,12 +339,13 @@ namespace AnkiSharp
         {
             foreach (var ankiItem in _ankiItems)
             {
+                var fields = (_infoPerMid[ankiItem.Mid] as Tuple<string, string, FieldList>).Item3;
                 var id_note = GeneralHelper.GetTimeStampTruncated();
                 var guid = ((ShortGuid)Guid.NewGuid()).ToString().Substring(0, 10);
-                var mid = "1342697561419";
+                var mid = ankiItem.Mid;
                 var mod = GeneralHelper.GetTimeStampTruncated();
-                var flds = GeneralHelper.ConcatFields(Fields, ankiItem, "\x1f").Replace("'", "’");
-                string sfld = ankiItem[Fields[0].Name].ToString();
+                var flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f").Replace("'", "’");
+                string sfld = ankiItem[fields[0].Name].ToString();
                 var csum = "";
 
                 using (SHA1Managed sha1 = new SHA1Managed())
@@ -277,10 +353,12 @@ namespace AnkiSharp
                     var l = sfld.Length >= 9 ? 8 : sfld.Length;
                     var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(sfld));
                     var sb = new StringBuilder(hash.Length);
+
                     foreach (byte b in hash)
                     {
                         sb.Append(b.ToString());
                     }
+
                     csum = sb.ToString().Substring(0, 10);
                 }
 
@@ -413,16 +491,19 @@ namespace AnkiSharp
                     _cardsMetadatas.Enqueue(cardMetadata.ToObject<CardMetadata>());
                 }
 
-                SQLiteDataReader reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT notes.flds, notes.mid FROM notes;");
-                var mid = -1.0;
+                SQLiteDataReader reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT notes.flds, notes.mid FROM notes");
+                List<double> mids = new List<double>();
                 string[] splitted = null;
                 List<string[]> result = new List<string[]>();
                 
                 while (reader.Read())
                 {
                     splitted = reader.GetString(0).Split('\x1f');
-                    
-                    mid = reader.GetInt64(1);
+
+                    var currentMid = reader.GetInt64(1);
+                    if (mids.Contains(currentMid) == false)
+                        mids.Add(currentMid);
+
                     result.Add(splitted);
                 }
 
@@ -436,35 +517,30 @@ namespace AnkiSharp
                 }
 
                 var regex = new Regex("{{(.*?)}}");
-                var afmt = models["" + mid]["tmpls"].First["afmt"].ToString();
-                var css = models["" + mid]["css"].ToString();
-                var matches = regex.Matches(afmt);
-                string[] fields = new string[matches.Count];
-
-                int i = 0;
-
-                foreach (Match match in matches)
-                {
-                    fields.SetValue(match.Value.Replace("{{", "").Replace("}}", ""), i);
-                    ++i;
-                }
                 
+                foreach (var mid in mids)
+                {
+                    var afmt = models["" + mid]["tmpls"].First["afmt"].ToString();
+                    var css = models["" + mid]["css"].ToString();
+
+                    var matches = regex.Matches(afmt);
+                    FieldList fields = new FieldList();
+                    
+                    foreach (Match match in matches)
+                    {
+                        fields.Add(new Field(match.Value.Replace("{{", "").Replace("}}", "")));
+                    }
+
+                    _infoPerMid.Add("" + mid, new Tuple<string, string, FieldList>(afmt.Replace("\n", "\\n"), css.Replace("\n", "\\n"), fields));
+                }
+
                 reader.Close();
 
                 var revLogMetadatas = Mapper.MapSQLiteReader(_conn, "SELECT * FROM revlog");
-                
+
                 foreach (var revLogMetadata in revLogMetadatas)
                 {
                     _revLogMetadatas.Add(revLogMetadata.ToObject<RevLogMetadata>());
-                }
-
-                _css = css.Replace("\n", "\\n");
-                SetFields(fields);
-                SetFormat(afmt.Replace("\n", "\\n"));
-
-                foreach (var res in fields)
-                {
-                    Console.WriteLine(res);
                 }
 
                 foreach (var res in result)
