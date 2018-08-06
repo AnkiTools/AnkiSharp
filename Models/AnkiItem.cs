@@ -22,6 +22,8 @@ namespace AnkiSharp.Models
                 return _dictionary.Count;
             }
         }
+
+        public string Mid { get; set; } = "";
         #endregion
 
         #region CTOR
@@ -53,7 +55,9 @@ namespace AnkiSharp.Models
         {
             foreach (var pair in first._dictionary)
             {
-                if (second._dictionary[pair.Key].ToString() != pair.Value.ToString())
+                if (second._dictionary.ContainsKey(pair.Key) == false)
+                    System.Console.WriteLine(pair.Key);
+                if (second._dictionary.ContainsKey(pair.Key) && second._dictionary[pair.Key].ToString() != pair.Value.ToString())
                     return false;
             }
 
