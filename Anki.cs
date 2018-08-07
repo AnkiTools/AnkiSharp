@@ -180,7 +180,7 @@ namespace AnkiSharp
         public void AddItem(AnkiItem item)
         {
             if (item.Mid == "")
-                item.Mid = (_infoPerMid.Keys as IEnumerable<string>).Last();
+                item.Mid = "DEFAULT";
 
             if (_infoPerMid.Contains(item.Mid) && item.Count != (_infoPerMid[item.Mid] as Info).Item3.Count)
                 throw new ArgumentException("Number of fields provided is not the same as the one expected");
@@ -219,7 +219,24 @@ namespace AnkiSharp
             
             return false;
         }
-        
+
+        public AnkiItem CreateAnkiItem(params string[] properties)
+        {
+            FieldList list = null;
+            IDictionaryEnumerator myEnumerator = _infoPerMid.GetEnumerator();
+
+            while (myEnumerator.MoveNext())
+            {
+                if (IsRightFieldList((myEnumerator.Value as Info).Item3, properties))
+                {
+                    list = (myEnumerator.Value as Info).Item3;
+                    break;
+                }
+            }
+            
+            return new AnkiItem(list, properties);
+        }
+
         #endregion
 
         #region PRIVATE
