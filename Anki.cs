@@ -14,6 +14,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Collections;
 
+using Info = System.Tuple<string, string, AnkiSharp.Models.FieldList>;
+
 namespace AnkiSharp
 {
     public class Anki
@@ -29,9 +31,11 @@ namespace AnkiSharp
         private List<AnkiItem> _ankiItems;
         private Queue<CardMetadata> _cardsMetadatas;
         private List<RevLogMetadata> _revLogMetadatas;
-
-        //   MID         FORMAT    CSS
-        // string, Tuple<string, string, FieldList>
+        
+        /// <summary>
+        /// Key : string which represent Mid
+        /// Value : Tuple string, string, FieldList which represent repectively the format, the css and the field list
+        /// </summary>
         OrderedDictionary _infoPerMid;
         #endregion
         
@@ -95,8 +99,8 @@ namespace AnkiSharp
                 fields.Add(new Field(value));
             }
 
-            var currentDefault = _infoPerMid["DEFAULT"] as Tuple<string, string, FieldList>;
-            Tuple<string, string, FieldList> newDefault = new Tuple<string, string, FieldList>(currentDefault.Item1, currentDefault.Item2, fields);
+            var currentDefault = _infoPerMid["DEFAULT"] as Info;
+            var newDefault = new Info(currentDefault.Item1, currentDefault.Item2, fields);
 
             _infoPerMid["DEFAULT"] = newDefault;
         }
@@ -104,16 +108,16 @@ namespace AnkiSharp
         public void SetCss(string filepath)
         {
             var css = new StreamReader(filepath).ReadToEnd();
-            var currentDefault = _infoPerMid["DEFAULT"] as Tuple<string, string, FieldList>;
-            Tuple<string, string, FieldList> newDefault = new Tuple<string, string, FieldList>(currentDefault.Item1, css, currentDefault.Item3);
+            var currentDefault = _infoPerMid["DEFAULT"] as Info;
+            var newDefault = new Info(currentDefault.Item1, css, currentDefault.Item3);
 
             _infoPerMid["DEFAULT"] = newDefault;
         }
 
         public void SetFormat(string format)
         {
-            var currentDefault = _infoPerMid["DEFAULT"] as Tuple<string, string, FieldList>;
-            Tuple<string, string, FieldList> newDefault = new Tuple<string, string, FieldList>(format, currentDefault.Item2, currentDefault.Item3);
+            var currentDefault = _infoPerMid["DEFAULT"] as Info;
+            var newDefault = new Info(format, currentDefault.Item2, currentDefault.Item3);
 
             _infoPerMid["DEFAULT"] = newDefault;
         }
@@ -149,17 +153,17 @@ namespace AnkiSharp
 
             while (myEnumerator.MoveNext())
             {
-                if (IsRightFieldList((myEnumerator.Value as Tuple<string, string, FieldList>).Item3, properties))
+                if (IsRightFieldList((myEnumerator.Value as Info).Item3, properties))
                 {
                     mid = myEnumerator.Key.ToString();
                     break;
                 }   
             }
 
-            if (_infoPerMid.Contains(mid) && properties.Length != (_infoPerMid[mid] as Tuple<string, string, FieldList>).Item3.Count)
+            if (_infoPerMid.Contains(mid) && properties.Length != (_infoPerMid[mid] as Info).Item3.Count)
                 throw new ArgumentException("Number of fields provided is not the same as the one expected");
 
-            AnkiItem item = new AnkiItem((_infoPerMid[mid] as Tuple<string, string, FieldList>).Item3, properties)
+            AnkiItem item = new AnkiItem((_infoPerMid[mid] as Info).Item3, properties)
             {
                 Mid = mid
             };
@@ -178,7 +182,7 @@ namespace AnkiSharp
             if (item.Mid == "")
                 item.Mid = (_infoPerMid.Keys as IEnumerable<string>).Last();
 
-            if (_infoPerMid.Contains(item.Mid) && item.Count != (_infoPerMid[item.Mid] as Tuple<string, string, FieldList>).Item3.Count)
+            if (_infoPerMid.Contains(item.Mid) && item.Count != (_infoPerMid[item.Mid] as Info).Item3.Count)
                 throw new ArgumentException("Number of fields provided is not the same as the one expected");
             else if (ContainsItem(item) == true)
                 return;
@@ -236,7 +240,7 @@ namespace AnkiSharp
                 new Field("Back")
             };
 
-            _infoPerMid.Add("DEFAULT", new Tuple<string, string, FieldList>("", css, fields));
+            _infoPerMid.Add("DEFAULT", new Info("", css, fields));
         }
 
         private bool IsRightFieldList(FieldList list, string[] properties)
@@ -291,7 +295,7 @@ namespace AnkiSharp
 
             foreach (var key in _infoPerMid.Keys.Cast<string>().ToList())
             {
-                var obj = (_infoPerMid[key] as Tuple<string, string, FieldList>);
+                var obj = (_infoPerMid[key] as Info);
 
                 if (models.Length > 0)
                     models.Append(", ");
@@ -339,7 +343,7 @@ namespace AnkiSharp
         {
             foreach (var ankiItem in _ankiItems)
             {
-                var fields = (_infoPerMid[ankiItem.Mid] as Tuple<string, string, FieldList>).Item3;
+                var fields = (_infoPerMid[ankiItem.Mid] as Info).Item3;
                 var id_note = GeneralHelper.GetTimeStampTruncated();
                 var guid = ((ShortGuid)Guid.NewGuid()).ToString().Substring(0, 10);
                 var mid = ankiItem.Mid;
@@ -531,7 +535,7 @@ namespace AnkiSharp
                         fields.Add(new Field(match.Value.Replace("{{", "").Replace("}}", "")));
                     }
 
-                    _infoPerMid.Add("" + mid, new Tuple<string, string, FieldList>(afmt.Replace("\n", "\\n"), css.Replace("\n", "\\n"), fields));
+                    _infoPerMid.Add("" + mid, new Info(afmt.Replace("\n", "\\n"), css.Replace("\n", "\\n"), fields));
                 }
 
                 reader.Close();
