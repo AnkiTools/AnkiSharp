@@ -85,7 +85,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 Anki test = new Anki(_NAME_OF_ANKI_PACKAGE_, new ApkgFile(_PATH_TO_APKG_FILE_));
 
 // Be careful, keep the same fields !
-AnkiItem ankiItem = new AnkiItem(test.Fields, "Fork", "El tenedor", "La fourchette");
+var item = test.CreateAnkiItem(("Fork", "El tenedor", "La fourchette");
 
 if (test.ContainsItem(ankiItem) == false) // will not add if the card is entirely the same (same fields' value)
     test.AddItem(ankiItem);
@@ -98,7 +98,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ``` csharp
 Anki test = new Anki(_NAME_OF_ANKI_PACKAGE_, new ApkgFile(_PATH_TO_APKG_FILE_));
 
-AnkiItem item = new AnkiItem(test.Fields, "Hello", "Bonjour");
+var item = test.CreateAnkiItem("Hello", "Bonjour");
 
 if (test.ContainsItem(x => { return Equals(item["FrontSide"], x["FrontSide"]); }) == false) // will not add if front of the card already exists
     test.AddItem(item);
