@@ -10,7 +10,7 @@ PM> Install-Package AnkiSharp -Version 1.1.0
 
 ### Youtube
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/UesrtZkuEKg" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+- Basic use : https://www.youtube.com/embed/UesrtZkuEKg
 
 ### Basic use
 ``` csharp
