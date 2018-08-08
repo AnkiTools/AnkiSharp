@@ -8,6 +8,10 @@
 PM> Install-Package AnkiSharp -Version 1.1.0
 ```
 
+### Youtube
+
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=UesrtZkuEKg&t=3s"></iframe>
+
 ### Basic use
 ``` csharp
 AnkiSharp.Anki test = new AnkiSharp.Anki(_NAME_OF_ANKI_PACKAGE_);
