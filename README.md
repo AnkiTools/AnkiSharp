@@ -128,6 +128,10 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - Add images and audio :zzz:
 - Generate audio with synthetizer or other tools? (Need to be careful about different languages) :zzz:
 
+## Issues
+
+- If you add the character ' the SQL query doesn't work
+
 ## Resources
 
 - [Anki APKG format documentation](http://decks.wikia.com/wiki/Anki_APKG_format_documentation)
