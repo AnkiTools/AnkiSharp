@@ -3,6 +3,8 @@ using AnkiSharp.Models;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using System.IO;
 
 namespace AnkiSharp.Helpers
 {
@@ -19,6 +21,11 @@ namespace AnkiSharp.Helpers
         internal static Double GetTimeStampTruncated()
         {
             return Math.Truncate(DateTime.Now.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds);
+        }
+
+        internal static string ReadResource(string path)
+        {
+            return new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(path)).ReadToEnd();
         }
 
     }

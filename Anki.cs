@@ -250,7 +250,7 @@ namespace AnkiSharp
 
             _path = path;
 
-            var css = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.CardStyle.css")).ReadToEnd();
+            var css = GeneralHelper.ReadResource("AnkiSharp.AnkiData.CardStyle.css");
             var fields = new FieldList
             {
                 new Field("FrontSide"),
@@ -266,16 +266,6 @@ namespace AnkiSharp
                 return false;
 
             return true;
-            //int count = 0;
-
-            //for (int i = 0; i < list.Count; ++i)
-            //{
-            //    Console.WriteLine("{0} - {1}", list[i].Name, properties[i]);
-            //    if (list[i].Name == properties[i])
-            //        ++count;
-            //}
-
-            //return count == list.Count - 1 ? true : false;
         }
 
         private void CreateZipFile(string path)
@@ -301,12 +291,12 @@ namespace AnkiSharp
             var crt = GeneralHelper.GetTimeStampTruncated();
 
             string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
-            var confFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.conf.json")).ReadToEnd();
+            var confFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.conf.json");
             var conf = confFileContent.Replace("{MODEL}", timeStamp.ToString()).Replace("\r\n", "");
 
             var id_deck = GeneralHelper.GetTimeStampTruncated();
 
-            var modelsFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.models.json")).ReadToEnd();
+            var modelsFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.models.json");
 
             StringBuilder models = new StringBuilder();
 
@@ -343,10 +333,10 @@ namespace AnkiSharp
                 models = models.Replace("{QFMT}", qfmt).Replace("{AFMT}", afmt).Replace("\r\n", "");
             }
 
-            var deckFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.decks.json")).ReadToEnd();
+            var deckFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.decks.json");
             var deck = deckFileContent.Replace("{NAME}", _name).Replace("{ID_DECK}", id_deck.ToString()).Replace("\r\n", "");
 
-            var dconfFileContent = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.AnkiData.dconf.json")).ReadToEnd();
+            var dconfFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.dconf.json");
             var dconf = dconfFileContent.Replace("\r\n", "");
 
             string insertCol = "INSERT INTO col VALUES(1, " + crt + ", " + timeStamp + ", " + timeStamp + ", 11, 0, 0, 0, '" + conf + "', '{" + models.ToString() + "}', '" + deck + "', '" + dconf + "', " + "'{}'" + ");";
@@ -423,12 +413,12 @@ namespace AnkiSharp
             {
                 _conn.Open();
 
-                var column = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.ColumnTable.txt")).ReadToEnd();
-                var notes = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.NotesTable.txt")).ReadToEnd();
-                var cards = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.CardsTable.txt")).ReadToEnd();
-                var revLogs = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.RevLogTable.txt")).ReadToEnd();
-                var graves = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.GravesTable.txt")).ReadToEnd();
-                var indexes = new StreamReader(_assembly.GetManifestResourceStream("AnkiSharp.SqLiteCommands.Indexes.txt")).ReadToEnd();
+                var column = GeneralHelper.ReadResource("AnkiSharp.SqLiteCommands.ColumnTable.txt");
+                var notes = GeneralHelper.ReadResource("AnkiSharp.SqLiteCommands.NotesTable.txt");
+                var cards = GeneralHelper.ReadResource("AnkiSharp.SqLiteCommands.CardsTable.txt");
+                var revLogs = GeneralHelper.ReadResource("AnkiSharp.SqLiteCommands.RevLogTable.txt");
+                var graves = GeneralHelper.ReadResource("AnkiSharp.SqLiteCommands.GravesTable.txt");
+                var indexes = GeneralHelper.ReadResource("AnkiSharp.SqLiteCommands.Indexes.txt");
 
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, column);
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, notes);
