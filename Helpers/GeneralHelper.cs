@@ -1,21 +1,27 @@
-﻿using System;
-using AnkiSharp.Models;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
+﻿using AnkiSharp.Models;
+using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace AnkiSharp.Helpers
 {
     internal static class GeneralHelper
     {
-        internal static string ConcatFields(FieldList flds, AnkiItem item, string separator)
+        internal static string ConcatFields(FieldList flds, AnkiItem item, string separator, string fieldForSound = null)
         {
-            var test = from t in flds
-                       select item[t.Name];
+            var matchedFields = (from t in flds
+                                select item[t.Name]).ToArray();
 
-            return String.Join(separator, test.ToArray());
+            if (fieldForSound != null)
+            {
+                int indexOfField = Array.IndexOf(matchedFields, item[fieldForSound]);
+
+                if (indexOfField != -1)
+                    matchedFields[indexOfField] += "[sound:" + matchedFields[0] + ".wav]";
+            }
+            
+            return String.Join(separator, matchedFields);
         }
 
         internal static Double GetTimeStampTruncated()
