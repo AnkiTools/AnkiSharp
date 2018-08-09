@@ -31,7 +31,7 @@ namespace AnkiSharp.Models
         {
             for (int i = 0; i < properties.Length; ++i)
             {
-                _dictionary[fields[i].Name] = properties[i];
+                _dictionary[fields[i].Name] = properties[i].Replace("'", "’");
             }
         }
         #endregion
