@@ -110,6 +110,22 @@ if (test.ContainsItem(x => { return Equals(item["FrontSide"], x["FrontSide"]); }
 test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
 
+### Generate Audio with MediaInfo
+
+``` csharp
+
+MediaInfo info = new MediaInfo()
+{
+    cultureInfo = new System.Globalization.CultureInfo(_CULTURE_INFO_STRING_),
+    field = _FIELD_IN_WHICH_THE_AUDIO_WILL_BE_PLAYED_
+};
+
+Anki chineseToFrench = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
+
+...
+
+```
+
 ## TO-DO
 
 :ok_hand: = Done
@@ -130,11 +146,10 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - synchronize with ankiweb ? :zzz:
 - Refactoring :zzz:
 - Add images and audio :zzz:
-- Generate audio with synthetizer or other tools? (Need to be careful about different languages) :zzz:
+- Generate audio with synthetizer or other tools? :ok_hand:
 
 ## Issues
 
-- If you add the character ' the SQL query doesn't work
 
 ## Resources
 
