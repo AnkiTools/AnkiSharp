@@ -23,6 +23,8 @@ namespace AnkiSharp
         #region MEMBERS
         private SQLiteConnection _conn;
 
+        private MediaInfo? _mediaInfo;
+
         private string _name;
         private Assembly _assembly;
         private string _path;
@@ -45,12 +47,14 @@ namespace AnkiSharp
         /// </summary>
         /// <param name="name">Specify the name of apkg file and deck</param>
         /// <param name="path">Where to save your apkg file</param>
-        public Anki(string name, string path = null)
+        public Anki(string name, MediaInfo? info = null, string path = null)
         {
             _cardsMetadatas = new Queue<CardMetadata>();
             _revLogMetadatas = new List<RevLogMetadata>();
 
             _assembly = Assembly.GetExecutingAssembly();
+
+            _mediaInfo = info;
 
             if (path == null)
                 _path = Path.Combine(Path.GetDirectoryName(_assembly.Location), "tmp");
@@ -68,13 +72,15 @@ namespace AnkiSharp
         /// </summary>
         /// <param name="name">Specify the name of apkg file and deck</param>
         /// <param name="file">Apkg file</param>
-        public Anki(string name, ApkgFile file)
+        public Anki(string name, ApkgFile file, MediaInfo? info = null)
         {
             _cardsMetadatas = new Queue<CardMetadata>();
             _revLogMetadatas = new List<RevLogMetadata>();
 
             _assembly = Assembly.GetExecutingAssembly();
             _path = Path.Combine(Path.GetDirectoryName(_assembly.Location), "tmp");
+
+            _mediaInfo = info;
 
             if (Directory.Exists(_path) == false)
                 Directory.CreateDirectory(_path);
@@ -283,6 +289,17 @@ namespace AnkiSharp
 
             File.Delete(anki2FilePath);
             File.Delete(mediaFilePath);
+
+            int i = 0;
+            string currentFile = Path.Combine(_path, i.ToString());
+
+            while (File.Exists(currentFile))
+            {
+                File.Delete(currentFile);
+                ++i;
+                currentFile = Path.Combine(_path, i.ToString());
+            }
+
         }
 
         private double CreateCol()
@@ -355,7 +372,13 @@ namespace AnkiSharp
                 var guid = ((ShortGuid)Guid.NewGuid()).ToString().Substring(0, 10);
                 var mid = ankiItem.Mid;
                 var mod = GeneralHelper.GetTimeStampTruncated();
-                var flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f").Replace("'", "’");
+
+                var flds = "";
+                if (_mediaInfo != null)
+                    flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f", _mediaInfo.Value.field);
+                else
+                    flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f");
+
                 string sfld = ankiItem[fields[0].Name].ToString();
                 var csum = "";
 
@@ -454,17 +477,22 @@ namespace AnkiSharp
             using (FileStream fs = File.Create(mediaFilePath))
             {
                 string data = "{";
-                //int i = 0;
+                int i = 0;
 
-                //foreach (var selectedWord in _ankiItems)
-                //{
-                   // data += "\"" + i.ToString() + "\": \"" + selectedWord.Front + ".mp3\"";
+                if (_mediaInfo != null)
+                {
+                    foreach (var selectedWord in _ankiItems)
+                    {
+                        SynthetizerHelper.CreateAudio(Path.Combine(_path, i.ToString()), selectedWord[_mediaInfo.Value.field].ToString(), _mediaInfo.Value.cultureInfo);
 
-                    //if (i < ankiItems.Count() - 1)
-                    //    data += ", ";
+                        data += "\"" + i.ToString() + "\": \"" + selectedWord[_mediaInfo.Value.field] + ".wav\"";
 
-                    //i++;
-                //}
+                        if (i < _ankiItems.Count() - 1)
+                            data += ", ";
+
+                        i++;
+                    }
+                }
                 data += "}";
 
                 Byte[] info = new UTF8Encoding(true).GetBytes(data);
