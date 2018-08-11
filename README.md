@@ -148,15 +148,16 @@ Anki chineseToFrench = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
 - Media and latex :zzz:
 - Conditional tags :zzz:
 - Cloze tags :zzz:
-- sub deck support :zzz:
-- synchronize with ankiweb ? :zzz:
+- Possibility to import media files :zzz:
+- Sub deck support :zzz:
+- Synchronize with ankiweb ? :zzz:
 - Refactoring :zzz:
 - Add images and audio :zzz:
 - Generate audio with synthetizer or other tools? :ok_hand:
 
 ## Issues
 
-- problem with due during import
+- problem with due during import (It comes potentially from crt, mod, scm in col -> initialization not well done)
 
 ## Resources
 
