@@ -166,9 +166,9 @@ namespace AnkiSharp
                 }   
             }
 
-            if (_infoPerMid.Contains(mid) && properties.Length != (_infoPerMid[mid] as Info).Item3.Count)
+            if (mid == "" || (_infoPerMid.Contains(mid) && properties.Length != (_infoPerMid[mid] as Info).Item3.Count))
                 throw new ArgumentException("Number of fields provided is not the same as the one expected");
-
+            
             AnkiItem item = new AnkiItem((_infoPerMid[mid] as Info).Item3, properties)
             {
                 Mid = mid
@@ -177,6 +177,7 @@ namespace AnkiSharp
             if (ContainsItem(item) == true)
                 return;
 
+            
             _ankiItems.Add(item);
         }
 
@@ -259,7 +260,7 @@ namespace AnkiSharp
             var css = GeneralHelper.ReadResource("AnkiSharp.AnkiData.CardStyle.css");
             var fields = new FieldList
             {
-                new Field("FrontSide"),
+                new Field("Front"),
                 new Field("Back")
             };
 
@@ -342,11 +343,12 @@ namespace AnkiSharp
                 var json = obj.Item3.ToJSON();
                 models = models.Replace("{FLDS}", json);
 
-                var format = obj.Item1 != "" ? obj.Item3.Format(obj.Item1) : obj.Item3.ToString();
-
-                var qfmt = Regex.Split(format, "<hr id=answer(.*?)>|<br>")[0];
+                var format = obj.Item1 != "" ? obj.Item3.Format(obj.Item1) : obj.Item3.ToFrontBack();
+                
+                var qfmt = Regex.Split(format, "<hr id=answer(.*?)>")[0];
                 var afmt = format;
 
+                afmt = afmt.Replace(qfmt, "{{FrontSide}}\\n");
                 models = models.Replace("{QFMT}", qfmt).Replace("{AFMT}", afmt).Replace("\r\n", "");
             }
 
@@ -501,7 +503,7 @@ namespace AnkiSharp
             }
         }
 
-        public void ReadApkgFile(string path)
+        private void ReadApkgFile(string path)
         {
             if (File.Exists(Path.Combine(_path, "collection.db")))
                 File.Delete(Path.Combine(_path, "collection.db"));
@@ -554,25 +556,9 @@ namespace AnkiSharp
                 {
                     models = JObject.Parse(reader.GetString(0));
                 }
-
-                var regex = new Regex("{{(.*?)}}");
                 
-                foreach (var mid in mids)
-                {
-                    var afmt = models["" + mid]["tmpls"].First["afmt"].ToString();
-                    var css = models["" + mid]["css"].ToString();
-
-                    var matches = regex.Matches(afmt);
-                    FieldList fields = new FieldList();
-                    
-                    foreach (Match match in matches)
-                    {
-                        fields.Add(new Field(match.Value.Replace("{{", "").Replace("}}", "")));
-                    }
-
-                    _infoPerMid.Add("" + mid, new Info(afmt.Replace("\n", "\\n"), css.Replace("\n", "\\n"), fields));
-                }
-
+                AddFields(models, mids);
+                
                 reader.Close();
 
                 var revLogMetadatas = Mapper.MapSQLiteReader(_conn, "SELECT * FROM revlog");
@@ -581,7 +567,7 @@ namespace AnkiSharp
                 {
                     _revLogMetadatas.Add(revLogMetadata.ToObject<RevLogMetadata>());
                 }
-
+                
                 foreach (var res in result)
                 {
                     AddItem(res);
@@ -598,7 +584,34 @@ namespace AnkiSharp
                 SQLiteConnection.ClearAllPools();
             }
         }
+        
+        private void AddFields(JObject models, List<double> mids)
+        {
+            var regex = new Regex("{{hint:(.*?)}}|{{(.*?)}}");
 
+            foreach (var mid in mids)
+            {
+                var qfmt = models["" + mid]["tmpls"].First["qfmt"].ToString().Replace("\"", "");
+                var afmt = models["" + mid]["tmpls"].First["afmt"].ToString();
+                var css = models["" + mid]["css"].ToString();
+
+                afmt = afmt.Replace("{{FrontSide}}", qfmt);
+
+                var matches = regex.Matches(afmt);
+                FieldList fields = new FieldList();
+
+                foreach (Match match in matches)
+                {
+                    var value = match.Value.Replace("hint:", "");
+                    var field = new Field(value.Replace("{{", "").Replace("}}", ""));
+
+                    fields.Add(field);
+                }
+
+                _infoPerMid.Add("" + mid, new Info(afmt.Replace("\n", "\\n"), css.Replace("\n", "\\n"), fields));
+            }
+        }
+        
         #endregion
 
         #endregion
