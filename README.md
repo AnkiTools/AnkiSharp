@@ -142,6 +142,12 @@ Anki chineseToFrench = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
 - If apkg or temp files already exists remove them :ok_hand:
 - ContainsItem with lambda as parameter to compare two objects :ok_hand:
 - A deck can have different fields for the cards :ok_hand:
+- Hint field (only works for importing) :zzz:
+- Type field :zzz:
+- Special fields :zzz:
+- Media and latex :zzz:
+- Conditional tags :zzz:
+- Cloze tags :zzz:
 - sub deck support :zzz:
 - synchronize with ankiweb ? :zzz:
 - Refactoring :zzz:
