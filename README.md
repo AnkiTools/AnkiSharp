@@ -157,7 +157,7 @@ Anki chineseToFrench = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
 
 ## Issues
 
-- problem with due during import (It comes potentially from crt, mod, scm in col -> initialization not well done)
+- problem with due during import
 
 ## Resources
 
