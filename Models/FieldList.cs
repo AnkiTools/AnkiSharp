@@ -36,6 +36,11 @@ namespace AnkiSharp.Models
             return String.Join(",\n", json.ToArray());
         }
 
+        public string ToFrontBack()
+        {
+            return String.Join("\\n<hr id=answer />\\n", (object[])ToArray());
+        }
+
         public override string ToString()
         {
             return String.Join("\\n<br>\\n", (object[])ToArray());
