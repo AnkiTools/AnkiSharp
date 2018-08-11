@@ -156,7 +156,7 @@ Anki chineseToFrench = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
 
 ## Issues
 
-- problem with due during import
+- problem with due during import (cards.id doesn't correspond to revlog.cid)
 
 ## Resources
 
