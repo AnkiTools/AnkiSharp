@@ -3,6 +3,7 @@
     internal class CardMetadata
     {
         public double id { get; set; }
+        public double mod { get; set; }
         public int type { get; set; }
         public int queue { get; set; }
         public double due { get; set; }

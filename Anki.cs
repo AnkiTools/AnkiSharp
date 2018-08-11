@@ -305,12 +305,12 @@ namespace AnkiSharp
 
         private double CreateCol()
         {
-            var timeStamp = GeneralHelper.GetTimeStampTruncated();
+            var mid = GeneralHelper.GetTimeStampTruncated().ToString();
             var crt = GeneralHelper.GetTimeStampTruncated();
 
             string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
             var confFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.conf.json");
-            var conf = confFileContent.Replace("{MODEL}", timeStamp.ToString()).Replace("\r\n", "");
+            var conf = confFileContent.Replace("{MODEL}", mid).Replace("\r\n", "");
 
             var id_deck = GeneralHelper.GetTimeStampTruncated();
 
@@ -327,12 +327,12 @@ namespace AnkiSharp
 
                 if (key.ToString() == "DEFAULT")
                 {
-                    var newMid = GeneralHelper.GetTimeStampTruncated().ToString();
+                    //var newMid = GeneralHelper.GetTimeStampTruncated().ToString();
                     var newEntry = _infoPerMid["DEFAULT"];
 
-                    _infoPerMid.Add(newMid, newEntry);
-                    _ankiItems.ForEach(x => x.Mid = x.Mid == "DEFAULT" ? newMid : x.Mid);
-                    models.Append(modelsFileContent.Replace("{MID}", newMid));
+                    _infoPerMid.Add(mid, newEntry);
+                    _ankiItems.ForEach(x => x.Mid = x.Mid == "DEFAULT" ? mid : x.Mid);
+                    models.Append(modelsFileContent.Replace("{MID}", mid));
                 }
                 else
                     models.Append(modelsFileContent.Replace("{MID}", key as string));
@@ -358,7 +358,7 @@ namespace AnkiSharp
             var dconfFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.dconf.json");
             var dconf = dconfFileContent.Replace("\r\n", "");
 
-            string insertCol = "INSERT INTO col VALUES(1, " + crt + ", " + timeStamp + ", " + timeStamp + ", 11, 0, 0, 0, '" + conf + "', '{" + models.ToString() + "}', '" + deck + "', '" + dconf + "', " + "'{}'" + ");";
+            string insertCol = "INSERT INTO col VALUES(1, " + crt + ", " + mid + ", " + mid + ", 11, 0, 0, 0, '" + conf + "', '{" + models.ToString() + "}', '" + deck + "', '" + dconf + "', " + "'{}'" + ");";
 
             SQLiteHelper.ExecuteSQLiteCommand(_conn, insertCol);
 
@@ -373,7 +373,7 @@ namespace AnkiSharp
                 var id_note = GeneralHelper.GetTimeStampTruncated();
                 var guid = ((ShortGuid)Guid.NewGuid()).ToString().Substring(0, 10);
                 var mid = ankiItem.Mid;
-                var mod = GeneralHelper.GetTimeStampTruncated();
+                var mod = GeneralHelper.GetTimeStampTruncated().ToString().Substring(0, 9);
 
                 var flds = "";
                 if (_mediaInfo != null)
@@ -407,7 +407,7 @@ namespace AnkiSharp
                 if (_cardsMetadatas.Count != 0)
                 {
                     CardMetadata metadata = _cardsMetadatas.Dequeue();
-                    insertCard = "INSERT INTO cards VALUES(" + metadata.id + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, " + metadata.type + ", " + metadata.queue + ", " + metadata.due + ", " + metadata.ivl + ", " + metadata.factor + ", " + metadata.reps + ", " + metadata.lapses + ", " + metadata.left + ", " + metadata.odue + ", " + metadata.odid + ", 0, '');";
+                    insertCard = "INSERT INTO cards VALUES(" + metadata.id + ", " + id_note + ", " + id_deck + ", " + "0, " + metadata.mod + ", -1, " + metadata.type + ", " + metadata.queue + ", " + metadata.due + ", " + metadata.ivl + ", " + metadata.factor + ", " + metadata.reps + ", " + metadata.lapses + ", " + metadata.left + ", " + metadata.odue + ", " + metadata.odid + ", 0, '');";
                 }
                 else
                     insertCard = "INSERT INTO cards VALUES(" + id_card + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, 0, 0, " + id_note + ", 0, 0, 0, 0, 0, 0, 0, 0, '');";
@@ -525,7 +525,7 @@ namespace AnkiSharp
 
                 Mapper mapper = Mapper.Instance;
 
-                var cardMetadatas = Mapper.MapSQLiteReader(_conn, "SELECT cards.id, cards.type, cards.queue, cards.due, cards.ivl, cards.factor, cards.reps, cards.lapses, cards.left, cards.odue, cards.odid FROM notes, cards WHERE cards.nid == notes.id;");
+                var cardMetadatas = Mapper.MapSQLiteReader(_conn, "SELECT cards.id, cards.mod, cards.type, cards.queue, cards.due, cards.ivl, cards.factor, cards.reps, cards.lapses, cards.left, cards.odue, cards.odid FROM cards");
 
                 foreach (var cardMetadata in cardMetadatas)
                 {
