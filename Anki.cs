@@ -338,7 +338,6 @@ namespace AnkiSharp
 
                 if (key.ToString() == "DEFAULT")
                 {
-                    //var newMid = GeneralHelper.GetTimeStampTruncated().ToString();
                     var newEntry = _infoPerMid["DEFAULT"];
 
                     _infoPerMid.Add(mid, newEntry);
