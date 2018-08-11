@@ -303,16 +303,27 @@ namespace AnkiSharp
 
         }
 
+        private long GetDayStart()
+        {
+            var dateOffset = DateTimeOffset.Now;
+            TimeSpan FourHoursSpan = new TimeSpan(4, 0, 0);
+            dateOffset = dateOffset.Subtract(FourHoursSpan);
+            dateOffset = new DateTimeOffset(dateOffset.Year, dateOffset.Month, dateOffset.Day,
+                                            0, 0, 0, dateOffset.Offset);
+            dateOffset = dateOffset.Add(FourHoursSpan);
+            return dateOffset.ToUnixTimeSeconds();
+        }
+
         private double CreateCol()
         {
-            var mid = GeneralHelper.GetTimeStampTruncated().ToString();
-            var crt = GeneralHelper.GetTimeStampTruncated();
+            var mid = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+            var crt = GetDayStart();
 
             string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
             var confFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.conf.json");
             var conf = confFileContent.Replace("{MODEL}", mid).Replace("\r\n", "");
 
-            var id_deck = GeneralHelper.GetTimeStampTruncated();
+            var id_deck = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
             var modelsFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.models.json");
 
@@ -370,10 +381,10 @@ namespace AnkiSharp
             foreach (var ankiItem in _ankiItems)
             {
                 var fields = (_infoPerMid[ankiItem.Mid] as Info).Item3;
-                var id_note = GeneralHelper.GetTimeStampTruncated();
+                var id_note = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 var guid = ((ShortGuid)Guid.NewGuid()).ToString().Substring(0, 10);
                 var mid = ankiItem.Mid;
-                var mod = GeneralHelper.GetTimeStampTruncated().ToString().Substring(0, 9);
+                var mod = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
 
                 var flds = "";
                 if (_mediaInfo != null)
@@ -401,7 +412,7 @@ namespace AnkiSharp
                 string insertNote = "INSERT INTO notes VALUES(" + id_note + ", '" + guid + "', " + mid + ", " + mod + ", -1, '  ', '" + flds + "', '" + sfld + "', " + csum + ", 0, '');";
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, insertNote);
 
-                var id_card = GeneralHelper.GetTimeStampTruncated();
+                var id_card = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 string insertCard = "";
 
                 if (_cardsMetadatas.Count != 0)
