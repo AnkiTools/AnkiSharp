@@ -407,7 +407,7 @@ namespace AnkiSharp
                 if (_cardsMetadatas.Count != 0)
                 {
                     CardMetadata metadata = _cardsMetadatas.Dequeue();
-                    insertCard = "INSERT INTO cards VALUES(" + id_card + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, " + metadata.type + ", " + metadata.queue + ", " + metadata.due + ", " + metadata.ivl + ", " + metadata.factor + ", " + metadata.reps + ", " + metadata.lapses + ", " + metadata.left + ", " + metadata.odue + ", " + metadata.odid + ", 0, '');";
+                    insertCard = "INSERT INTO cards VALUES(" + metadata.id + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, " + metadata.type + ", " + metadata.queue + ", " + metadata.due + ", " + metadata.ivl + ", " + metadata.factor + ", " + metadata.reps + ", " + metadata.lapses + ", " + metadata.left + ", " + metadata.odue + ", " + metadata.odid + ", 0, '');";
                 }
                 else
                     insertCard = "INSERT INTO cards VALUES(" + id_card + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, 0, 0, " + id_note + ", 0, 0, 0, 0, 0, 0, 0, 0, '');";
@@ -525,7 +525,7 @@ namespace AnkiSharp
 
                 Mapper mapper = Mapper.Instance;
 
-                var cardMetadatas = Mapper.MapSQLiteReader(_conn, "SELECT cards.type, cards.queue, cards.due, cards.ivl, cards.factor, cards.reps, cards.lapses, cards.left, cards.odue, cards.odid FROM notes, cards WHERE cards.nid == notes.id;");
+                var cardMetadatas = Mapper.MapSQLiteReader(_conn, "SELECT cards.id, cards.type, cards.queue, cards.due, cards.ivl, cards.factor, cards.reps, cards.lapses, cards.left, cards.odue, cards.odid FROM notes, cards WHERE cards.nid == notes.id;");
 
                 foreach (var cardMetadata in cardMetadatas)
                 {
