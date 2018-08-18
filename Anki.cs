@@ -325,7 +325,7 @@ namespace AnkiSharp
 
             var id_deck = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
-            var modelsFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.models.json");
+            var modelsFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.models.json").Replace("{MOD}", mid);
 
             StringBuilder models = new StringBuilder();
 
@@ -363,7 +363,7 @@ namespace AnkiSharp
             }
 
             var deckFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.decks.json");
-            var deck = deckFileContent.Replace("{NAME}", _name).Replace("{ID_DECK}", id_deck.ToString()).Replace("\r\n", "");
+            var deck = deckFileContent.Replace("{NAME}", _name).Replace("{ID_DECK}", id_deck.ToString()).Replace("{MOD}", mid).Replace("\r\n", "");
 
             var dconfFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.dconf.json");
             var dconf = dconfFileContent.Replace("\r\n", "");

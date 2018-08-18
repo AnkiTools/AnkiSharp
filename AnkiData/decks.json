@@ -25,7 +25,7 @@
       0
     ],
     "id": 1,
-    "mod": 1398130160
+    "mod": 1533970713
   },
   "{ID_DECK}": {
     "desc": "",
@@ -34,25 +34,25 @@
     "usn": -1,
     "collapsed": false,
     "newToday": [
-      754,
+      365,
       0
     ],
     "timeToday": [
-      754,
+      365,
       0
     ],
     "dyn": 0,
     "extendNew": 10,
     "conf": 1,
     "revToday": [
-      754,
+      365,
       0
     ],
     "lrnToday": [
-      754,
+      365,
       0
     ],
     "id": {ID_DECK},
-    "mod": 1398130140
+    "mod": {MOD}
   }
 }
