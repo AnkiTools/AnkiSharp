@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AnkiSharp.Helpers
 {
@@ -27,6 +29,23 @@ namespace AnkiSharp.Helpers
         internal static string ReadResource(string path)
         {
             return new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(path)).ReadToEnd();
+        }
+
+        internal static string CheckSum(string sfld)
+        {
+            using (SHA1Managed sha1 = new SHA1Managed())
+            {
+                var l = sfld.Length >= 9 ? 8 : sfld.Length;
+                var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(sfld));
+                var sb = new StringBuilder(hash.Length);
+
+                foreach (byte b in hash)
+                {
+                    sb.Append(b.ToString());
+                }
+
+                return sb.ToString().Substring(0, 10);
+            }
         }
 
     }
