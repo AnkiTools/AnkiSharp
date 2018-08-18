@@ -2,18 +2,16 @@
 using AnkiSharp.Models;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data.SQLite;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Collections;
-
 using Info = System.Tuple<string, string, AnkiSharp.Models.FieldList>;
 
 namespace AnkiSharp
@@ -302,127 +300,27 @@ namespace AnkiSharp
             }
 
         }
-
-        private long GetDayStart()
+        
+        private string CreateCol()
         {
-            var dateOffset = DateTimeOffset.Now;
-            TimeSpan FourHoursSpan = new TimeSpan(4, 0, 0);
-            dateOffset = dateOffset.Subtract(FourHoursSpan);
-            dateOffset = new DateTimeOffset(dateOffset.Year, dateOffset.Month, dateOffset.Day,
-                                            0, 0, 0, dateOffset.Offset);
-            dateOffset = dateOffset.Add(FourHoursSpan);
-            return dateOffset.ToUnixTimeSeconds();
+            Collection collection = new Collection(_infoPerMid, _ankiItems, _name);
+
+            SQLiteHelper.ExecuteSQLiteCommand(_conn, collection.Query);
+
+            return collection.DeckId;
         }
 
-        private double CreateCol()
-        {
-            var mid = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-            var crt = GetDayStart();
-
-            string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
-            var confFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.conf.json");
-            var conf = confFileContent.Replace("{MODEL}", mid).Replace("\r\n", "");
-
-            var id_deck = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
-            var modelsFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.models.json").Replace("{MOD}", mid);
-
-            StringBuilder models = new StringBuilder();
-
-            foreach (var key in _infoPerMid.Keys.Cast<string>().ToList())
-            {
-                var obj = (_infoPerMid[key] as Info);
-
-                if (models.Length > 0)
-                    models.Append(", ");
-
-                if (key.ToString() == "DEFAULT")
-                {
-                    var newEntry = _infoPerMid["DEFAULT"];
-
-                    _infoPerMid.Add(mid, newEntry);
-                    _ankiItems.ForEach(x => x.Mid = x.Mid == "DEFAULT" ? mid : x.Mid);
-                    models.Append(modelsFileContent.Replace("{MID}", mid));
-                }
-                else
-                    models.Append(modelsFileContent.Replace("{MID}", key as string));
-
-                models = models.Replace("{CSS}", obj.Item2);
-                models = models.Replace("{ID_DECK}", id_deck.ToString());
-
-                var json = obj.Item3.ToJSON();
-                models = models.Replace("{FLDS}", json);
-
-                var format = obj.Item1 != "" ? obj.Item3.Format(obj.Item1) : obj.Item3.ToFrontBack();
-                
-                var qfmt = Regex.Split(format, "<hr id=answer(.*?)>")[0];
-                var afmt = format;
-
-                afmt = afmt.Replace(qfmt, "{{FrontSide}}\\n");
-                models = models.Replace("{QFMT}", qfmt).Replace("{AFMT}", afmt).Replace("\r\n", "");
-            }
-
-            var deckFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.decks.json");
-            var deck = deckFileContent.Replace("{NAME}", _name).Replace("{ID_DECK}", id_deck.ToString()).Replace("{MOD}", mid).Replace("\r\n", "");
-
-            var dconfFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.dconf.json");
-            var dconf = dconfFileContent.Replace("\r\n", "");
-
-            string insertCol = "INSERT INTO col VALUES(1, " + crt + ", " + mid + ", " + mid + ", 11, 0, 0, 0, '" + conf + "', '{" + models.ToString() + "}', '" + deck + "', '" + dconf + "', " + "'{}'" + ");";
-
-            SQLiteHelper.ExecuteSQLiteCommand(_conn, insertCol);
-
-            return id_deck;
-        }
-
-        private void CreateNotesAndCards(double id_deck)
+        private void CreateNotesAndCards(string id_deck)
         {
             foreach (var ankiItem in _ankiItems)
             {
-                var fields = (_infoPerMid[ankiItem.Mid] as Info).Item3;
-                var id_note = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                var guid = ((ShortGuid)Guid.NewGuid()).ToString().Substring(0, 10);
-                var mid = ankiItem.Mid;
-                var mod = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
+                Note note = new Note(_infoPerMid, _mediaInfo, ankiItem);
 
-                var flds = "";
-                if (_mediaInfo != null)
-                    flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f", _mediaInfo.Value.field);
-                else
-                    flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f");
+                SQLiteHelper.ExecuteSQLiteCommand(_conn, note.Query);
 
-                string sfld = ankiItem[fields[0].Name].ToString();
-                var csum = "";
+                Card card = new Card(_cardsMetadatas, note, id_deck);
 
-                using (SHA1Managed sha1 = new SHA1Managed())
-                {
-                    var l = sfld.Length >= 9 ? 8 : sfld.Length;
-                    var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(sfld));
-                    var sb = new StringBuilder(hash.Length);
-
-                    foreach (byte b in hash)
-                    {
-                        sb.Append(b.ToString());
-                    }
-
-                    csum = sb.ToString().Substring(0, 10);
-                }
-
-                string insertNote = "INSERT INTO notes VALUES(" + id_note + ", '" + guid + "', " + mid + ", " + mod + ", -1, '  ', '" + flds + "', '" + sfld + "', " + csum + ", 0, '');";
-                SQLiteHelper.ExecuteSQLiteCommand(_conn, insertNote);
-
-                var id_card = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                string insertCard = "";
-
-                if (_cardsMetadatas.Count != 0)
-                {
-                    CardMetadata metadata = _cardsMetadatas.Dequeue();
-                    insertCard = "INSERT INTO cards VALUES(" + metadata.id + ", " + id_note + ", " + id_deck + ", " + "0, " + metadata.mod + ", -1, " + metadata.type + ", " + metadata.queue + ", " + metadata.due + ", " + metadata.ivl + ", " + metadata.factor + ", " + metadata.reps + ", " + metadata.lapses + ", " + metadata.left + ", " + metadata.odue + ", " + metadata.odid + ", 0, '');";
-                }
-                else
-                    insertCard = "INSERT INTO cards VALUES(" + id_card + ", " + id_note + ", " + id_deck + ", " + "0, " + mod + ", -1, 0, 0, " + id_note + ", 0, 0, 0, 0, 0, 0, 0, 0, '');";
-
-                SQLiteHelper.ExecuteSQLiteCommand(_conn, insertCard);
+                SQLiteHelper.ExecuteSQLiteCommand(_conn, card.Query);
             }
         }
 
@@ -535,13 +433,13 @@ namespace AnkiSharp
 
                 Mapper mapper = Mapper.Instance;
 
-                var cardMetadatas = Mapper.MapSQLiteReader(_conn, "SELECT cards.id, cards.mod, cards.type, cards.queue, cards.due, cards.ivl, cards.factor, cards.reps, cards.lapses, cards.left, cards.odue, cards.odid FROM cards");
+                var cardMetadatas = Mapper.MapSQLiteReader(_conn, "SELECT id, mod, type, queue, due, ivl, factor, reps, lapses, left, odue, odid FROM cards");
 
                 foreach (var cardMetadata in cardMetadatas)
                 {
                     _cardsMetadatas.Enqueue(cardMetadata.ToObject<CardMetadata>());
                 }
-
+                
                 SQLiteDataReader reader = SQLiteHelper.ExecuteSQLiteCommandRead(_conn, "SELECT notes.flds, notes.mid FROM notes");
                 List<double> mids = new List<double>();
                 string[] splitted = null;
