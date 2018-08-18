@@ -142,6 +142,7 @@ Anki chineseToFrench = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
 - If apkg or temp files already exists remove them :ok_hand:
 - ContainsItem with lambda as parameter to compare two objects :ok_hand:
 - A deck can have different fields for the cards :ok_hand:
+- Conf, decks, dconf, models.mod need to be managable :zzz:
 - Hint field (only works for importing) :zzz:
 - Type field :zzz:
 - Special fields :zzz:
