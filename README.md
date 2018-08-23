@@ -11,6 +11,7 @@ PM> Install-Package AnkiSharp -Version 1.2.0
 ### Youtube
 
 - Basic use : https://www.youtube.com/watch?v=UesrtZkuEKg&t=3s
+- Automatic audio creation : https://www.youtube.com/watch?v=uG-NWQGlYvM
 
 ### Basic use
 ``` csharp
