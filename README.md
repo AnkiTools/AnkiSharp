@@ -5,7 +5,7 @@
 ### Nuget
 
 ```
-PM> Install-Package AnkiSharp -Version 1.1.0
+PM> Install-Package AnkiSharp -Version 1.2.0
 ```
 
 ### Youtube
