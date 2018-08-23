@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace AnkiSharp.Models
+namespace AnkiSharp
 {
     public struct MediaInfo
     {
