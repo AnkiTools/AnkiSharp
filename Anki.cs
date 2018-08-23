@@ -174,7 +174,6 @@ namespace AnkiSharp
 
             if (ContainsItem(item) == true)
                 return;
-
             
             _ankiItems.Add(item);
         }
@@ -405,7 +404,7 @@ namespace AnkiSharp
                 }
                 data += "}";
 
-                Byte[] info = new UTF8Encoding(true).GetBytes(data);
+                byte[] info = new UTF8Encoding(true).GetBytes(data);
                 fs.Write(info, 0, info.Length);
                 fs.Close();
             }
