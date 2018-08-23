@@ -1,4 +1,4 @@
-# AnkiSharp
+﻿# AnkiSharp
 
 :tada: It's finally here! You can create automatically anki cards from your C# application. :tada:
 
@@ -125,6 +125,19 @@ Anki ankiObject = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
 
 ...
 
+```
+
+### Hint fields
+
+``` csharp
+Anki test = new Anki(_NAME_OF_ANKI_PACKAGE_);
+
+test.SetFields("Front", "hint:Hint", "Back");
+test.SetFormat("{0} - {1} \\n<hr id=answer(.*?)>\\n {2}");
+
+test.AddItem("好的", "ok", "d'accord");
+
+test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
 
 ## TO-DO
