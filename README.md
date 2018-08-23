@@ -144,7 +144,7 @@ Anki ankiObject = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
 - ContainsItem with lambda as parameter to compare two objects :ok_hand:
 - A deck can have different fields for the cards :ok_hand:
 - Conf, decks, dconf, models.mod need to be managable :zzz:
-- Hint field (only works for importing) :zzz:
+- Hint field :ok_hand:
 - Type field :zzz:
 - Special fields :zzz:
 - Media and latex :zzz:
