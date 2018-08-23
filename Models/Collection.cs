@@ -69,7 +69,7 @@ namespace AnkiSharp.Models
                 _models = _models.Replace("{ID_DECK}", DeckId);
 
                 var json = obj.Item3.ToJSON();
-                _models = _models.Replace("{FLDS}", json);
+                _models = _models.Replace("{FLDS}", json.Replace("hint:", ""));
 
                 var format = obj.Item1 != "" ? obj.Item3.Format(obj.Item1) : obj.Item3.ToFrontBack();
 
