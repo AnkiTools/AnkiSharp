@@ -121,7 +121,7 @@ MediaInfo info = new MediaInfo()
     field = _FIELD_IN_WHICH_THE_AUDIO_WILL_BE_PLAYED_
 };
 
-Anki chineseToFrench = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
+Anki ankiObject = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
 
 ...
 
