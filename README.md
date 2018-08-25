@@ -4,9 +4,8 @@
 
 ## Contribute
 
-<aside class="notice">
-I'm looking for some developers to develop the Java, Javascript and Python version, If you are interested in it please contact me here : https://clement-jean.github.io/contact/
-</aside>
+
+:warning: I'm looking for some developers to develop the Java, Javascript and Python version, If you are interested in it please contact me here : https://clement-jean.github.io/contact/ :warning:
 
 ### Nuget
 
