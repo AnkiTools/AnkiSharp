@@ -494,7 +494,7 @@ namespace AnkiSharp
         
         private void AddFields(JObject models, List<double> mids)
         {
-            var regex = new Regex("{{hint:(.*?)}}|{{(.*?)}}");
+            var regex = new Regex("{{hint:(.*?)}}|{{type:(.*?)}}|{{(.*?)}}");
 
             foreach (var mid in mids)
             {
@@ -509,7 +509,7 @@ namespace AnkiSharp
 
                 foreach (Match match in matches)
                 {
-                    var value = match.Value.Replace("hint:", "");
+                    var value = match.Value.Replace("hint:", "").Replace("type:", "");
                     var field = new Field(value.Replace("{{", "").Replace("}}", ""));
 
                     fields.Add(field);

@@ -162,7 +162,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - A deck can have different fields for the cards :ok_hand:
 - Conf, decks, dconf, models.mod need to be managable :zzz:
 - Hint field :ok_hand:
-- Type field :zzz:
+- Type field :ok_hand:
 - Special fields :zzz:
 - Media and latex :zzz:
 - Conditional tags :zzz:
