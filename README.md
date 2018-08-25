@@ -174,10 +174,6 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - Add images and audio :zzz:
 - Generate audio with synthetizer or other tools? :ok_hand:
 
-## Issues
-
-- problem with due during import
-
 ## Resources
 
 - [Anki APKG format documentation](http://decks.wikia.com/wiki/Anki_APKG_format_documentation)
