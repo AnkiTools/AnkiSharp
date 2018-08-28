@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace AnkiSharp
 {
-    public class MediaInfo : Object
+    public class MediaInfo
     {
         public CultureInfo cultureInfo;
         public string field;
