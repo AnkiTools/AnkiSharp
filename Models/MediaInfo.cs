@@ -1,10 +1,12 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace AnkiSharp
 {
-    public struct MediaInfo
+    public class MediaInfo : Object
     {
         public CultureInfo cultureInfo;
         public string field;
+        public string extension = ".wav";
     }
 }

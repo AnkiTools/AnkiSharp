@@ -388,13 +388,13 @@ namespace AnkiSharp
                 string data = "{";
                 int i = 0;
 
-                if (_mediaInfo != null)
+                if (!_mediaInfo.Equals(null))
                 {
                     foreach (var selectedWord in _ankiItems)
                     {
                         SynthetizerHelper.CreateAudio(Path.Combine(_path, i.ToString()), selectedWord[_mediaInfo.Value.field].ToString(), _mediaInfo.Value.cultureInfo);
 
-                        data += "\"" + i.ToString() + "\": \"" + selectedWord[_mediaInfo.Value.field] + ".wav\"";
+                        data += "\"" + i.ToString() + "\": \"" + selectedWord[_mediaInfo.Value.field] + _mediaInfo.Value.extension + "\"";
 
                         if (i < _ankiItems.Count() - 1)
                             data += ", ";
