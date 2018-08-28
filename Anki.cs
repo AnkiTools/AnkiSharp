@@ -45,7 +45,7 @@ namespace AnkiSharp
         /// </summary>
         /// <param name="name">Specify the name of apkg file and deck</param>
         /// <param name="path">Where to save your apkg file</param>
-        public Anki(string name, MediaInfo? info = null, string path = null)
+        public Anki(string name, MediaInfo info = null, string path = null)
         {
             _cardsMetadatas = new Queue<CardMetadata>();
             _revLogMetadatas = new List<RevLogMetadata>();
