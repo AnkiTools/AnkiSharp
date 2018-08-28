@@ -392,7 +392,8 @@ namespace AnkiSharp
                 {
                     foreach (var selectedWord in _ankiItems)
                     {
-                        SynthetizerHelper.CreateAudio(Path.Combine(_path, i.ToString()), selectedWord[_mediaInfo.Value.field].ToString(), _mediaInfo.Value.cultureInfo);
+                        if (_mediaInfo.Value.extension == ".wav")
+                            SynthetizerHelper.CreateAudio(Path.Combine(_path, i.ToString()), selectedWord[_mediaInfo.Value.field].ToString(), _mediaInfo.Value.cultureInfo);
 
                         data += "\"" + i.ToString() + "\": \"" + selectedWord[_mediaInfo.Value.field] + _mediaInfo.Value.extension + "\"";
 
