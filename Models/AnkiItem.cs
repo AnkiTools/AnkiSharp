@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using AnkiSharp.Models;
+using System.Collections.Generic;
 using System.Dynamic;
 
-namespace AnkiSharp.Models
+namespace AnkiSharp
 {
     public class AnkiItem : DynamicObject
     {
