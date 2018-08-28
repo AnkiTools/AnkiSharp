@@ -21,7 +21,7 @@ namespace AnkiSharp
         #region MEMBERS
         private SQLiteConnection _conn;
 
-        private MediaInfo? _mediaInfo;
+        private MediaInfo _mediaInfo;
 
         private string _name;
         private Assembly _assembly;
@@ -70,7 +70,7 @@ namespace AnkiSharp
         /// </summary>
         /// <param name="name">Specify the name of apkg file and deck</param>
         /// <param name="file">Apkg file</param>
-        public Anki(string name, ApkgFile file, MediaInfo? info = null)
+        public Anki(string name, ApkgFile file, MediaInfo info = null)
         {
             _cardsMetadatas = new Queue<CardMetadata>();
             _revLogMetadatas = new List<RevLogMetadata>();
@@ -388,14 +388,14 @@ namespace AnkiSharp
                 string data = "{";
                 int i = 0;
 
-                if (!_mediaInfo.Equals(null))
+                if (_mediaInfo != null)
                 {
                     foreach (var item in _ankiItems)
                     {
-                        if (_mediaInfo.Value.extension == ".wav")
-                            SynthetizerHelper.CreateAudio(Path.Combine(_path, i.ToString()), item[_mediaInfo.Value.field].ToString(), _mediaInfo.Value.cultureInfo);
+                        if (_mediaInfo.extension == ".wav")
+                            SynthetizerHelper.CreateAudio(Path.Combine(_path, i.ToString()), item[_mediaInfo.field].ToString(), _mediaInfo.cultureInfo);
 
-                        data += "\"" + i.ToString() + "\": \"" + item[_mediaInfo.Value.field] + _mediaInfo.Value.extension + "\"";
+                        data += "\"" + i.ToString() + "\": \"" + item[_mediaInfo.field] + _mediaInfo.extension + "\"";
 
                         if (i < _ankiItems.Count() - 1)
                             data += ", ";

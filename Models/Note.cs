@@ -23,7 +23,7 @@ namespace AnkiSharp.Models
         internal long Id { private set; get; }
         internal string Query { private set; get; }
 
-        public Note(OrderedDictionary infoPerMid, MediaInfo? mediaInfo, AnkiItem ankiItem)
+        public Note(OrderedDictionary infoPerMid, MediaInfo mediaInfo, AnkiItem ankiItem)
         {
             var fields = (infoPerMid[ankiItem.Mid] as Info).Item3;
             Id = DateTimeOffset.Now.ToUnixTimeMilliseconds();
@@ -35,7 +35,7 @@ namespace AnkiSharp.Models
 
             _flds = "";
             if (mediaInfo != null)
-                _flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f", mediaInfo.Value.field);
+                _flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f", mediaInfo.field);
             else
                 _flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f");
 
