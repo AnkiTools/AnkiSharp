@@ -167,7 +167,6 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - Media and latex :zzz:
 - Conditional tags :zzz:
 - Cloze tags :zzz:
-- Possibility to import media files :zzz:
 - Sub deck support :zzz:
 - Synchronize with ankiweb ? :zzz:
 - Refactoring :zzz:
