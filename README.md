@@ -150,6 +150,8 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 
 :zzz: = Waiting for you to be developed
 
+:computer: = Working on it!
+
 - Add more fields to the cards :ok_hand:
 - Possibility to change the card's CSS :ok_hand:
 - Being able to show what's on the front and on the back of the card :ok_hand:
@@ -167,7 +169,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - Media and latex :zzz:
 - Conditional tags :zzz:
 - Cloze tags :zzz:
-- Sub deck support :zzz:
+- Sub deck support :computer:
 - Synchronize with ankiweb ? :zzz:
 - Refactoring :zzz:
 - Add images and audio :zzz:
