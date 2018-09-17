@@ -147,7 +147,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ## IMPORTANT NOTICE
 
 This repository is in stand by, we are looking for some developpers in order to get help.
-If you are interested in participating please contact me (find email here : https://github.com/Clement-Jean)
+If you are interested in participating or If you think you can do better for handling the format but also in terms of architecture, please contact me (find email here : https://github.com/Clement-Jean) 
 
 ## TO-DO
 
