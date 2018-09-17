@@ -144,6 +144,11 @@ test.AddItem("好的", "ok", "d'accord");
 test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
 
+## IMPORTANT NOTICE
+
+This repository is in stand by, we are looking for some developpers in order to get help.
+If you are interested in participating please contact me (find email here : https://github.com/Clement-Jean)
+
 ## TO-DO
 
 :ok_hand: = Done
@@ -169,7 +174,7 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 - Media and latex :zzz:
 - Conditional tags :zzz:
 - Cloze tags :zzz:
-- Sub deck support :computer:
+- Sub deck support :zzz:
 - Synchronize with ankiweb ? :zzz:
 - Refactoring :zzz:
 - Add images and audio :zzz:
