@@ -133,12 +133,7 @@ namespace AnkiSharp
         /// </summary>
         public void CreateApkgFile(string path)
         {
-            _collectionFilePath = Path.Combine(_path, "collection.db");
-
-            if (File.Exists(_collectionFilePath) == true)
-                File.Delete(_collectionFilePath);
-
-            File.Create(_collectionFilePath).Close();
+            CreateDbFile();
 
             CreateMediaFile();
 
@@ -245,6 +240,16 @@ namespace AnkiSharp
 
         #region PRIVATE
 
+        private void CreateDbFile(string name = "collection.db")
+        {
+            _collectionFilePath = Path.Combine(_path, name);
+
+            if (File.Exists(_collectionFilePath) == true)
+                File.Delete(_collectionFilePath);
+
+            File.Create(_collectionFilePath).Close();
+        }
+
         private void Init(string path, string name)
         {
             _infoPerMid = new OrderedDictionary();
@@ -309,17 +314,19 @@ namespace AnkiSharp
             return collection.DeckId;
         }
 
-        private void CreateNotesAndCards(string id_deck)
+        private void CreateNotesAndCards(string id_deck, Anki anki = null)
         {
-            foreach (var ankiItem in _ankiItems)
-            {
-                Note note = new Note(_infoPerMid, _mediaInfo, ankiItem);
+            Anki currentAnki = anki ?? (this);
 
-                SQLiteHelper.ExecuteSQLiteCommand(_conn, note.Query);
+            foreach (var ankiItem in currentAnki._ankiItems)
+            {
+                Note note = new Note(currentAnki._infoPerMid, currentAnki._mediaInfo, ankiItem);
+
+                SQLiteHelper.ExecuteSQLiteCommand(currentAnki._conn, note.Query);
 
                 Card card = new Card(_cardsMetadatas, note, id_deck);
 
-                SQLiteHelper.ExecuteSQLiteCommand(_conn, card.Query);
+                SQLiteHelper.ExecuteSQLiteCommand(currentAnki._conn, card.Query);
             }
         }
 
@@ -338,7 +345,7 @@ namespace AnkiSharp
             }
         }
 
-        private void ExecuteSQLiteCommands()
+        private void ExecuteSQLiteCommands(Anki anki = null)
         {
             _conn = new SQLiteConnection(@"Data Source=" + _collectionFilePath + ";Version=3;");
             try
@@ -360,7 +367,7 @@ namespace AnkiSharp
                 SQLiteHelper.ExecuteSQLiteCommand(_conn, indexes);
 
                 var id_deck = CreateCol();
-                CreateNotesAndCards(id_deck);
+                CreateNotesAndCards(id_deck, anki);
 
                 AddRevlogMetadata();
             }
