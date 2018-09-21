@@ -7,12 +7,11 @@ namespace AnkiSharp.Helpers
 {
     internal static class SynthetizerHelper
     {
-        internal static void CreateAudio(string path, string text, CultureInfo cultureInfo)
+        internal static void CreateAudio(string path, string text, CultureInfo cultureInfo, SpeechAudioFormatInfo audioFormat)
         {
             using (SpeechSynthesizer synth = new SpeechSynthesizer())
             {
-                synth.SetOutputToWaveFile(path,
-                  new SpeechAudioFormatInfo(32000, AudioBitsPerSample.Sixteen, AudioChannel.Mono));
+                synth.SetOutputToWaveFile(path, audioFormat);
 
                 PromptBuilder builder = new PromptBuilder(cultureInfo);
                 builder.AppendText(text);
