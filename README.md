@@ -131,6 +131,25 @@ Anki ankiObject = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
 
 ```
 
+### Audio quality
+
+The current audio has a samples per second of 8000, 16 bits per sample and is in mono channel. If you would like to change it you can do it like this:
+
+``` csharp
+
+MediaInfo info = new MediaInfo()
+{
+    cultureInfo = new System.Globalization.CultureInfo(_CULTURE_INFO_STRING_),
+    field = _FIELD_IN_WHICH_THE_AUDIO_WILL_BE_PLAYED_,
+	audioFormat = new SpeechAudioFormatInfo(_SAMPLES_PER_SECOND_, _BITS_PER_SAMPLE_, _AUDIO_CHANNEL_)
+};
+
+Anki ankiObject = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
+
+...
+
+```
+
 ### Hint fields
 
 ``` csharp
