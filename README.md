@@ -133,7 +133,7 @@ Anki ankiObject = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
 
 ### Audio quality
 
-The current audio has a samples per second of 8000, 16 bits per sample and is in mono channel. If you would like to change it you can do it like this:
+The current audio has a samples per second of 8000, 16 bits per sample and is in mono channel. If you would like to change it you can do it like this (be aware that the quality quickly increase or decrease the size of your deck):
 
 ``` csharp
 
