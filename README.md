@@ -198,6 +198,7 @@ If you are interested in participating or If you think you can do better for han
 - Refactoring :zzz:
 - Add images and audio :zzz:
 - Generate audio with synthetizer or other tools? :ok_hand:
+- Solve bug if tmp files are in the same place as result file :zzz:
 
 ## Resources
 
