@@ -347,9 +347,9 @@ namespace AnkiSharp
 
         private void ExecuteSQLiteCommands(Anki anki = null)
         {
-            _conn = new SQLiteConnection(@"Data Source=" + _collectionFilePath + ";Version=3;");
             try
             {
+                _conn = new SQLiteConnection(@"Data Source=" + _collectionFilePath + ";Version=3;");
                 _conn.Open();
 
                 var column = GeneralHelper.ReadResource("AnkiSharp.SqLiteCommands.ColumnTable.txt");
