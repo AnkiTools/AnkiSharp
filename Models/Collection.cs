@@ -36,8 +36,7 @@ namespace AnkiSharp.Models
 
             _mod = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
             _crt = GetDayStart();
-
-            string dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+            
             var confFileContent = GeneralHelper.ReadResource("AnkiSharp.AnkiData.conf.json");
             _conf = confFileContent.Replace("{MODEL}", mid).Replace("\r\n", "");
 
