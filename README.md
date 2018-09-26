@@ -48,8 +48,8 @@ test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ``` csharp
 AnkiSharp.Anki test = new AnkiSharp.Anki(_NAME_OF_ANKI_PACKAGE_);
 
-//Permits to change the css of your cards by providing it Css file path
-test.SetCss(_PATH_OF_CSS_FILE_);
+//Permits to change the css of your cards by providing it a css string
+test.SetCss(_CSS_CONTENT_);
 
 test.AddItem("Hello", "Bonjour");
 test.AddItem("How are you ?", "Comment ca va ?");
