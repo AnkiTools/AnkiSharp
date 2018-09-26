@@ -109,9 +109,8 @@ namespace AnkiSharp
             _infoPerMid["DEFAULT"] = newDefault;
         }
 
-        public void SetCss(string filepath)
+        public void SetCss(string css)
         {
-            var css = new StreamReader(filepath).ReadToEnd();
             var currentDefault = _infoPerMid["DEFAULT"] as Info;
             var newDefault = new Info(currentDefault.Item1, css, currentDefault.Item3);
 
