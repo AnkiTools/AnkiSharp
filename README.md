@@ -9,12 +9,6 @@
 
 :warning: **I'm looking for some developers to develop the Java, Javascript and Python version, If you are interested in it please contact me here : https://clement-jean.github.io/contact/** :warning:
 
-### Nuget
-
-```
-PM> Install-Package AnkiSharp -Version 1.3.1
-```
-
 ### Youtube
 
 - Basic use : https://www.youtube.com/watch?v=UesrtZkuEKg&t=3s
