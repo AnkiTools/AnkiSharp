@@ -9,6 +9,8 @@
 
 :warning: **I'm looking for some developers to develop the Java, Javascript and Python version, If you are interested in it please contact me here : https://clement-jean.github.io/contact/** :warning:
 
+For the C# version you can find a to do list here : [To do list](https://github.com/AnkiTools/AnkiSharp/projects/1)
+
 ### Youtube
 
 - Basic use : https://www.youtube.com/watch?v=UesrtZkuEKg&t=3s
@@ -170,43 +172,6 @@ test.AddItem("好的", "ok", "d'accord");
 
 test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
-
-## IMPORTANT NOTICE
-
-This repository is in stand by, we are looking for some developpers in order to get help.
-If you are interested in participating or If you think you can do better for handling the format but also in terms of architecture, please contact me (find email here : https://github.com/Clement-Jean) 
-
-## TO-DO
-
-:ok_hand: = Done
-
-:zzz: = Waiting for you to be developed
-
-:computer: = Working on it!
-
-- Add more fields to the cards :ok_hand:
-- Possibility to change the card's CSS :ok_hand:
-- Being able to show what's on the front and on the back of the card :ok_hand:
-- Get the words for other apkg files :ok_hand:
-- When added from apkg file, copy cards' metadata (when to review them, ...) :ok_hand:
-- Copy the revlog entries :ok_hand:
-- Optimize CardMetadata and RevLogMetadata struct (doesn't need to be all doubles) :ok_hand:
-- If apkg or temp files already exists remove them :ok_hand:
-- ContainsItem with lambda as parameter to compare two objects :ok_hand:
-- A deck can have different fields for the cards :ok_hand:
-- Conf, decks, dconf, models.mod need to be managable :zzz:
-- Hint field :ok_hand:
-- Type field :ok_hand:
-- Special fields :zzz:
-- Media and latex :zzz:
-- Conditional tags :zzz:
-- Cloze tags :zzz:
-- Sub deck support :zzz:
-- Synchronize with ankiweb ? :zzz:
-- Refactoring :zzz:
-- Add images and audio :zzz:
-- Generate audio with synthetizer or other tools? :ok_hand:
-- Solve bug if tmp files are in the same place as result file :zzz:
 
 ## Resources
 
