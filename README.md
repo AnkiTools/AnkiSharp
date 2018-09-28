@@ -1,7 +1,9 @@
 ﻿# AnkiSharp
 
+[![NuGet](https://img.shields.io/nuget/v/AnkiSharp.svg)](https://www.nuget.org/packages/AnkiSharp
 [![NuGet](https://img.shields.io/nuget/dt/AnkiSharp.svg)](https://www.nuget.org/packages/AnkiSharp)
-[![NuGet](https://img.shields.io/nuget/v/AnkiSharp.svg)](https://www.nuget.org/packages/AnkiSharp)
+[![GitHub commit activity the past week, 4 weeks, year](https://img.shields.io/github/commit-activity/y/AnkiTools/AnkiSharp.svg&colorB=<red>)](https://www.nuget.org/packages/AnkiSharp)
+
 
 :tada: It's finally here! You can create automatically anki cards from your C# application. :tada:
 
