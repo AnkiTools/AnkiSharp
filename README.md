@@ -17,6 +17,17 @@ PM> Install-Package AnkiSharp -Version 1.3.1
 - Basic use : https://www.youtube.com/watch?v=UesrtZkuEKg&t=3s
 - Automatic audio creation : https://www.youtube.com/watch?v=uG-NWQGlYvM
 
+### Debug
+
+AnkiSharp is using SourceLink (https://github.com/dotnet/sourcelink). It helps you debugging your program using this nuget.
+
+If you encounter an exception coming from Ankisharp:
+
+	- Put a breakpoint on the function which as a problem
+	- Once on the breakpoint, click on the 'Step Into' button (F11)
+
+Then you will be redirected in the AnkiSharp nuget code. Finally, please report the issue and start contributing.
+
 ### Basic use
 ``` csharp
 AnkiSharp.Anki test = new AnkiSharp.Anki(_NAME_OF_ANKI_PACKAGE_);
