@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="Anki.cs" />
     <Compile Include="Helpers\Mapper.cs" />
+    <Compile Include="Helpers\StrokeOrderHelper.cs" />
     <Compile Include="Helpers\SynthetizerHelper.cs" />
     <Compile Include="Models\AnkiItem.cs" />
     <Compile Include="ApkgFile.cs" />
@@ -132,7 +133,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-*" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-*" PrivateAssets="All" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets')" />
