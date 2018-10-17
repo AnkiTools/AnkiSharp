@@ -398,7 +398,9 @@ namespace AnkiSharp
                 {
                     foreach (var item in _ankiItems)
                     {
-                        if (_mediaInfo.extension == ".wav")
+                        if (_mediaInfo.extension == ".gif" && _mediaInfo.cultureInfo.Name == "zh-CN")
+                            StrokeOrderHelper.DownloadImage(Path.Combine(_path, i.ToString()), item[_mediaInfo.field].ToString());
+                        else if (_mediaInfo.extension == ".wav")
                             SynthetizerHelper.CreateAudio(Path.Combine(_path, i.ToString()), item[_mediaInfo.field].ToString(), _mediaInfo.cultureInfo, _mediaInfo.audioFormat);
 
                         data += "\"" + i.ToString() + "\": \"" + item[_mediaInfo.field] + _mediaInfo.extension + "\"";
