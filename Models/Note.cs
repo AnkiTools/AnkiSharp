@@ -33,11 +33,7 @@ namespace AnkiSharp.Models
            
             _mod = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
 
-            _flds = "";
-            if (mediaInfo != null)
-                _flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f", mediaInfo.field);
-            else
-                _flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f");
+            _flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f", mediaInfo);
 
             _sfld = ankiItem[fields[0].Name].ToString();
             var csum = GeneralHelper.CheckSum(_sfld);
