@@ -1,5 +1,6 @@
 ﻿using AnkiSharp.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,17 +11,23 @@ namespace AnkiSharp.Helpers
 {
     internal static class GeneralHelper
     {
-        internal static string ConcatFields(FieldList flds, AnkiItem item, string separator, string fieldForSound = null)
+        internal static Dictionary<string, string> extensionTag = new Dictionary<string, string>()
+        {
+            { ".wav", "[sound:{0}]" },
+            { ".gif", "<img src=\"{0}\"/>" }
+        };
+
+        internal static string ConcatFields(FieldList flds, AnkiItem item, string separator, MediaInfo info)
         {
             var matchedFields = (from t in flds
                                 select item[t.Name]).ToArray();
 
-            if (fieldForSound != null)
+            if (info != null)
             {
-                int indexOfField = Array.IndexOf(matchedFields, item[fieldForSound]);
+                int indexOfField = Array.IndexOf(matchedFields, item[info.field]);
 
                 if (indexOfField != -1)
-                    matchedFields[indexOfField] += "[sound:" + matchedFields[0] + ".wav]";
+                    matchedFields[indexOfField] += String.Format(extensionTag[info.extension], matchedFields[0] + info.extension);
             }
             
             return String.Join(separator, matchedFields);
