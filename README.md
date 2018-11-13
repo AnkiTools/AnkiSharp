@@ -7,9 +7,13 @@
 
 ### Contribute
 
-:warning: **I'm looking for some developers to develop the Java, Javascript and Python version, If you are interested in it please contact me here : https://clement-jean.github.io/contact/** :warning:
+#### Other languages
 
-For the C# version you can find a to do list here : [To do list](https://github.com/AnkiTools/AnkiSharp/projects/1)
+I'm looking for some developers to develop the Java, Javascript and Python version, If you are interested in it please contact me here : https://clement-jean.github.io/contact/
+
+#### C#
+
+You can find a to do list here : [To do list](https://github.com/AnkiTools/AnkiSharp/projects/1)
 
 ### Youtube
 
@@ -26,6 +30,10 @@ If you encounter an exception coming from Ankisharp:
 	- Once on the breakpoint, click on the 'Step Into' button (F11)
 
 Then you will be redirected in the AnkiSharp nuget code. Finally, please report the issue and start contributing.
+
+### Tutorial and documentation
+
+This repo as a wiki : [Wiki](https://github.com/AnkiTools/AnkiSharp/wiki). You can look at any function individually or follow the guide tour by click on the next link at the end of each page.
 
 ### Basic use
 ``` csharp
@@ -141,7 +149,7 @@ Anki ankiObject = new Anki(_NAME_OF_ANKI_PACKAGE_, info);
 
 ```
 
-### Audio quality (Not yet in Nuget package)
+### Audio quality
 
 The current audio has a samples per second of 8000, 16 bits per sample and is in mono channel. If you would like to change it you can do it like this (be aware that the quality quickly increase or decrease the size of your deck):
 
@@ -172,6 +180,8 @@ test.AddItem("好的", "ok", "d'accord");
 
 test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
+
+MANQUE LE TYPEFIELD !!!!!!!
 
 ## Resources
 

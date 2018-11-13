@@ -6,7 +6,7 @@ namespace AnkiSharp.Helpers
 {
     internal static class StrokeOrderHelper
     {
-        internal static string baseUrl = "https://raw.githubusercontent.com/nmarley/chinese-char-animations/master/images/"; 
+        internal static string baseUrl = "https://raw.githubusercontent.com/nmarley/chinese-char-animations/master/images/";
 
         internal static void DownloadImage(string path, string text)
         {

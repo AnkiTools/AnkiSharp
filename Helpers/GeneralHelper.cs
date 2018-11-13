@@ -20,7 +20,8 @@ namespace AnkiSharp.Helpers
         internal static string ConcatFields(FieldList flds, AnkiItem item, string separator, MediaInfo info)
         {
             var matchedFields = (from t in flds
-                                select item[t.Name]).ToArray();
+                                 where item[t.Name] as string != ""
+                                 select item[t.Name]).ToArray();
 
             if (info != null)
             {

@@ -29,12 +29,8 @@ namespace AnkiSharp.Models
             Id = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             _guid = ((ShortGuid)Guid.NewGuid()).ToString().Substring(0, 10);
             _mid = ankiItem.Mid;
-
-           
             _mod = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
-
             _flds = GeneralHelper.ConcatFields(fields, ankiItem, "\x1f", mediaInfo);
-
             _sfld = ankiItem[fields[0].Name].ToString();
             var csum = GeneralHelper.CheckSum(_sfld);
             

@@ -100,6 +100,9 @@ namespace AnkiSharp
 
             foreach (var value in values)
             {
+                if (value.Contains("hint:") || value.Contains("type:"))
+                    continue;
+
                 fields.Add(new Field(value));
             }
 
@@ -518,7 +521,10 @@ namespace AnkiSharp
 
                 foreach (Match match in matches)
                 {
-                    var value = match.Value.Replace("hint:", "").Replace("type:", "");
+                    if (match.Value.Contains("type:") || match.Value.Contains("hint:"))
+                        continue;
+
+                    var value = match.Value;
                     var field = new Field(value.Replace("{{", "").Replace("}}", ""));
 
                     fields.Add(field);

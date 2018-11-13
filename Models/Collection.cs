@@ -46,9 +46,14 @@ namespace AnkiSharp.Models
 
             _models = new StringBuilder();
 
+            var alreadyAdded = new List<string>();
+
             foreach (var key in infoPerMid.Keys.Cast<string>().ToList())
             {
                 var obj = (infoPerMid[key] as Info);
+
+                if (alreadyAdded.Contains(obj.Item3.ToJSON().Replace("hint:", "").Replace("type:", "")))
+                    continue;
 
                 if (_models.Length > 0)
                     _models.Append(", ");
@@ -68,7 +73,9 @@ namespace AnkiSharp.Models
                 _models = _models.Replace("{ID_DECK}", DeckId);
 
                 var json = obj.Item3.ToJSON();
+                
                 _models = _models.Replace("{FLDS}", json.Replace("hint:", "").Replace("type:", ""));
+                alreadyAdded.Add(json.Replace("hint:", "").Replace("type:", ""));
 
                 var format = obj.Item1 != "" ? obj.Item3.Format(obj.Item1) : obj.Item3.ToFrontBack();
 
