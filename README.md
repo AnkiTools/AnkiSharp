@@ -181,8 +181,6 @@ test.AddItem("好的", "ok", "d'accord");
 test.CreateApkgFile(_PATH_FOR_ANKI_FILE_);
 ```
 
-MANQUE LE TYPEFIELD !!!!!!!
-
 ## Resources
 
 - [Anki APKG format documentation](http://decks.wikia.com/wiki/Anki_APKG_format_documentation)
